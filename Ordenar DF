@@ -1,5 +1,8 @@
-### Ordenar datos según los valores de una columna
-## Ejemplo con datos iris y  airquality:
+###################################################################
+###        Ordenar datos según los valores de una columna       ###
+###            Ejemplo con datos iris y  airquality             ###
+###                   <Amadeo Guzmán C.>                        ###
+###################################################################          
 
 ## Ordenar base de datos "iris" en base a 1 columna
 #ordenar por Petal.Length y lo guardamos en un nuevo objeto "mi.iris"
