@@ -1,10 +1,22 @@
 ### Ordenar datos según los valores de una columna
+## Ejemplo con datos iris y  airquality:
 
-#Ejemplo con iris:
-#Ordenar base de datos "iris" por Petal.Length y lo guardamos en un nuevo objeto "mi.iris"
+## Ordenar base de datos "iris" en base a 1 columna
+#ordenar por Petal.Length y lo guardamos en un nuevo objeto "mi.iris"
 mi.iris <- iris[order(iris$Petal.Length),]
 mi.iris
 
-#Ordenar de forma decreciente
+## Ordenar de forma decreciente:
 mi.iris <- iris[order(-iris$Petal.Length),]
 mi.iris
+
+## Ordenar por más de 1 criterio:
+#ordenar según Species, Petal.Length, Sepal.Length
+#La función order() permite ordenar por más de un criterio
+#En el caso de variables de tipo cadena (cualitativas) las ordena alfabéticamente
+iris[order(iris$Species, iris$Petal.Length, iris$Sepal.Length),]
+
+## Filtrar y ordenar:
+#filtrar filas por mes 6 y ordenar en forma decreciente según temperatura
+airquality[airquality$Month==6 & order(-airquality$Temp),]
+
