@@ -1,0 +1,10 @@
+### Ordenar datos según los valores de una columna
+
+#Ejemplo con iris:
+#Ordenar base de datos "iris" por Petal.Length y lo guardamos en un nuevo objeto "mi.iris"
+mi.iris <- iris[order(iris$Petal.Length),]
+mi.iris
+
+#Ordenar de forma decreciente
+mi.iris <- iris[order(-iris$Petal.Length),]
+mi.iris
