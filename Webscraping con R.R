@@ -1,9 +1,9 @@
 ###########################################################################################
-###       Script para obtener datos en forma autom醫ica desde DIRECTEMAR (web)          ###
-###          "Informaci髇 en tiempo real sobre el estado de los puertos"                ###
+###       Script para obtener datos en forma autom谩tica desde DIRECTEMAR (web)          ###
+###          "Informaci贸n en tiempo real sobre el estado de los puertos"                ###
 ###                                                                                     ###
-###                             < Amadeo Guzm醤 >                                       ###
-###                       鷏tima mdificaci髇: 21-06-2018                                ###
+###                             < Amadeo Guzm谩n >                                       ###
+###                       煤ltima mdificaci贸n: 21-06-2018                                ###
 ###########################################################################################
 
 
@@ -12,32 +12,32 @@ library(XML)
 library(lubridate)
 
 #=====================================================================================
-### Opci髇 cargando SOLO LA TABLA QUE NECESITAMOS - TABLA 3
+### Opci贸n cargando SOLO LA TABLA QUE NECESITAMOS - TABLA 3
 #(revisar cada cierto tiempo que no cambie el sistemade tablas en la pagina web)
 #=====================================================================================
 
 
-### Webscraping desde la p醙ina de DIRECTEMAR
+### Webscraping desde la p谩gina de DIRECTEMAR
 #------------------------------------------------
 
-#Direcci髇 web
+#Direcci贸n web
 url <- "http://meteoarmada.directemar.cl/site/estadopuertos/estadopuertos.html"
 
-#Si ya sabemos que tabla queremos, vamos directo a ella para evitar cargar todas las tablas de una p醙ina web (TABLA 3)
+#Si ya sabemos que tabla queremos, vamos directo a ella para evitar cargar todas las tablas de una p谩gina web (TABLA 3)
 tabla3 <- readHTMLTable(url, which = 3) 
 
-#Creaci髇 de data frame con las columnas que necesitamos
+#Creaci贸n de data frame con las columnas que necesitamos
 bd.puertos<- tabla3[,c(1,2,3,5)]
 names(bd.puertos)
 colnames(bd.puertos) <- c("Capitania.Puerto", "Estado.Puerto", "Condicion","Horario")
 head(bd.puertos)
 
-#Ajustando formatos de fecha y creaci髇 de nuevas columnas
-bd.puertos$Fecha.Completa <- parse_date_time(bd.puertos$Horario, orders="dmy HM") #esta funci髇 <parse_date_time> convierte un vector en un objeto POSIXct, especificando sus formatos en el argumento orders=""
+#Ajustando formatos de fecha y creaci贸n de nuevas columnas
+bd.puertos$Fecha.Completa <- parse_date_time(bd.puertos$Horario, orders="dmy HM") #esta funci贸n <parse_date_time> convierte un vector en un objeto POSIXct, especificando sus formatos en el argumento orders=""
 bd.puertos$Dia <- day(bd.puertos$Fecha.Completa)
 bd.puertos$Mes <- month(bd.puertos$Fecha.Completa)
-bd.puertos$A駉 <- year(bd.puertos$Fecha.Completa)
-bd.puertos$Fecha.OK <- make_date(day = bd.puertos$Dia, month = bd.puertos$Mes, year = bd.puertos$A駉)
+bd.puertos$A帽o <- year(bd.puertos$Fecha.Completa)
+bd.puertos$Fecha.OK <- make_date(day = bd.puertos$Dia, month = bd.puertos$Mes, year = bd.puertos$A帽o)
 bd.puertos$Lectura <- now()
 
 
