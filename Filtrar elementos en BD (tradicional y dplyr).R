@@ -1,8 +1,8 @@
 #######################################################
 ###  Formas de filtrar elementos en bases de datos  ###
 ###       diferencias entre OR (|) y AND (&)        ###
-###           mÈtodo cl·sico y dplyr                ###
-###            <Amadeo Guzm·n C.>                   ###
+###           m√©todo cl√°sico y dplyr                ###
+###            <Amadeo Guzm√°n C.>                   ###
 #######################################################
 
 #datos
@@ -16,7 +16,7 @@ bdatos
 library(dplyr)
 
 ## Filtrar datos dentro de una columna -> OR = |
-#mÈtodo cl·sico
+#m√©todo cl√°sico
 bdatos[bdatos$var1=="b" | bdatos$var1=="d",]
 #dplyr
 bdatos %>% 
@@ -24,7 +24,7 @@ bdatos %>%
 
 
 ## Filtrar datos con criterios de diferentes columnas  -> AND = &
-#mÈtodo cl·sico
+#m√©todo cl√°sico
 bdatos[bdatos$var1=="b" & bdatos$var2==15,]
 #dplyr
 bdatos %>% 
