@@ -16,7 +16,7 @@ library(dplyr)
 
 
 #-----------------------------------------------------------------------
-##  OR = | (usar principalmente para filtrara dentro de una columna)
+##  OR = | (usar principalmente para filtrar dentro de una columna)
 #-----------------------------------------------------------------------
 #método clásico
 bdatos[bdatos$var1=="b" | bdatos$var1=="d",] #en una misma columna
