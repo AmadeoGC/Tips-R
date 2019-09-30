@@ -1,13 +1,13 @@
 ###############################################################
-###     Generar gráfico con su tabla de datos asociada      ###
+###     Generar grÃ¡fico con su tabla de datos asociada      ###
 ###            ggplot +  ggpubr::ggarrange()                ###
-###               <Amadeo Guzmán C.>                        ###
+###               <Amadeo GuzmÃ¡n C.>                        ###
 ###############################################################
 
+#Ejmplo obtenido de:
+#Falta link -> Buscar
 
-
-
-
+#Data frame
 df <- structure(list(City = structure(c(2L, 3L, 1L), .Label = c("Minneapolis", "Phoenix","Raleigh"), class = "factor"), January = c(52.1, 40.5, 12.2), 
                      February = c(55.1, 42.2, 16.5), March = c(59.7, 49.2, 28.3), April = c(67.7, 59.5, 45.1), May = c(76.3, 67.4, 57.1),
                      June = c(84.6, 74.4, 66.9), July = c(91.2, 77.5, 71.9), August = c(89.1, 76.5, 70.2), September = c(83.8, 70.6, 60),
@@ -28,11 +28,11 @@ levels(dfm$month) <- month.abb
 
 
 #-------------------------------
-## Generar gráfico principal
+## Generar grÃ¡fico principal
 #-------------------------------
 library(ggplot2)
 
-#Gráfico ->  gráfico de lineas básico
+#GrÃ¡fico ->  grÃ¡fico de lineas bÃ¡sico
 (p1 <- ggplot(dfm, aes(month, value, group = City, colour = City)) +
                geom_line(size = 1)
   )
@@ -56,7 +56,7 @@ library(ggplot2)
 #------------------------------
 ## Generar tabla de datos
 #------------------------------
-#Para crear la tabla realmente se hace un gráfico con geom_text()
+#Para crear la tabla realmente se hace un grÃ¡fico con geom_text()
 (data_table <- ggplot(dfm, aes(x = month, y = factor(City), label = format(value, nsmall = 1), colour = City)) +
                 geom_text(size = 3.5) +
                 theme_bw() +
