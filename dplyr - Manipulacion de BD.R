@@ -1,7 +1,7 @@
 ###############################################################
 ###                   Libreria <dplyr>                      ###
 ###     manipulación y transformación de bases de datos     ###
-###                 <Amadeo guzmán C.>                      ### 
+###                 <Amadeo Guzmán C.>                      ### 
 ###############################################################
 
 library(dplyr)
