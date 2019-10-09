@@ -1,7 +1,7 @@
 ###############################################################
 ###                   Libreria <dplyr>                      ###
-###     manipulaci髇 y transformaci髇 de bases de datos     ###
-###                 <Amadeo guzm醤 C.>                      ### 
+###     manipulaci贸n y transformaci贸n de bases de datos     ###
+###                 <Amadeo guzm谩n C.>                      ### 
 ###############################################################
 
 library(dplyr)
@@ -15,7 +15,7 @@ library(dplyr)
 #-----------------
 ### filter()
 #-----------------
-#Seleccionar las filas que cumplen con una condici髇( ==, >=, <=, <, >, !=)
+#Seleccionar las filas que cumplen con alguna condici贸n( ==, >=, <=, <, >, !=)
 ?filter 
 
 #BD
@@ -28,11 +28,10 @@ starwars[starwars$name == "Darth Vader",]
 starwars[starwars$species=="Human",]
 starwars[starwars$mass>1000,]
 
-# filtrer en base a multiples condiciones o criterios
+# filtrar en base a multiples variables
 filter(starwars, hair_color == "black" & gender == "female") #y
 filter(starwars, hair_color == "black" | gender == "female") #o
-
-# Utilizar la coma "," entre cada condici髇 es equivalente a la expresi髇 "&"
+# Utilizar la coma "," entre cada variable es equivalente a la expresi贸n "&"
 filter(starwars, hair_color == "black", gender == "female")
 
 
@@ -51,7 +50,7 @@ filter(starwars, hair_color == "black", gender == "female")
 #---------------
 # Uso de %>%
 #---------------
-# %>% este operador se podr韆 traducir como "luego"... vincula lo que se va haciendo en cada linea de c骴igo
+# %>% este operador se podr铆a traducir como "luego"... vincula lo que se va haciendo en cada linea de c贸digo
 starwars %>%  
   filter(homeworld=="Naboo")
 
