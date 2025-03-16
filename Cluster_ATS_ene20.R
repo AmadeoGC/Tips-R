@@ -1,8 +1,5 @@
 #######################################################################################+
-###       EVALUACI”N DE CONCESIONES: ANALISIS DE CLUSTER - PCA - A. Riesgo          ####
-###                       Empresa: CERMAQ | Especie: Salar                          ###+
-###                              <Amadeo Guzm·n>                                    ###+
-###                   Fecha ˙ltima actualizaciÛn: 20-02-2020                        ###+
+###       EVALUACI√ìN DE CONCESIONES: ANALISIS DE CLUSTER - PCA - A. Riesgo          ####
 #######################################################################################+
 
 
@@ -30,7 +27,7 @@ datos <- read.csv2("BD_salar_para_cluster.csv", header=TRUE, row.names=1) %>%
 head(datos)
 glimpse(datos)
 
-#crear nueva BD seleccionando las variables a utilizar en an·lisis de clister
+#crear nueva BD seleccionando las variables a utilizar en an√°lisis de clister
 (datos_ok <- datos %>% 
   select(lapso_engorda, mort_acum, sgr, gf3, kg_cosecha_smolt, gr_ab_ton_cosecha, banos_caligus)
 )
@@ -45,7 +42,7 @@ datos_est
 
 ########################################################+
 ###
-###       ETAPA 1: ACP y An·lisis de CLUSTERS     ============================================================================================================================
+###       ETAPA 1: ACP y An√°lisis de CLUSTERS     ============================================================================================================================
 ###
 ########################################################+
 
@@ -58,12 +55,12 @@ library(factoextra) # clustering algorithms & visualization
 library(cluster)    # clustering algorithms & funcion daisy() para calcular distancias
 library(clValid)
 library(NbClust)
-library(fpc) #funciones para obtener indices de evaluaciÛn de clusters
+library(fpc) #funciones para obtener indices de evaluaci√≥n de clusters
 
 
 
 ###
-### ...2] EstadÌstico de Hopkins. Tiene sentido aplicar un an·lisis Cluster? ------------------------------------------------------------------------
+### ...2] Estad√≠stico de Hopkins. Tiene sentido aplicar un an√°lisis Cluster? ------------------------------------------------------------------------
 ###
 
 # Valores cercanos a 0 indica que tiene sentido aplicar clustering. valores cercanos a 0.5 indica que 
@@ -98,10 +95,10 @@ res.dist <- get_dist(datos_est, stand = FALSE, method = "euclidean")
 
 
 ###
-### ...4]. Hay indicios de una agrupaciÛn subyacente? --------------------------------------------------------------------------------------------------
+### ...4]. Hay indicios de una agrupaci√≥n subyacente? --------------------------------------------------------------------------------------------------
 ###
 
-# VisualizaciÛn de una posible tendencia de Clusters
+# Visualizaci√≥n de una posible tendencia de Clusters
 # In the plot below, similar objects are close to one another. check legend with distance.
 
 (cor_dist <- fviz_dist(dist.obj = distance1, show_labels = TRUE, 
@@ -116,7 +113,7 @@ ggsave("cor_dist.png", cor_dist, units = "cm", dpi=500, width = 27, height = 16)
 
 
 '
-#gr·fico de distancias obtenidas con la funciÛn get_dist()  -> se obtiene el mismo resultado que con funciÛn daisy()
+#gr√°fico de distancias obtenidas con la funci√≥n get_dist()  -> se obtiene el mismo resultado que con funci√≥n daisy()
 fviz_dist(res.dist, 
           gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07")) #se obtiene el mismo resultado
 '
@@ -124,10 +121,10 @@ fviz_dist(res.dist,
 
 
 ###
-### ...5] Determinando la cantidad Ûptima de clusters y mÈtodo a elegir -------------------------------------------------------------------------------
+### ...5] Determinando la cantidad √≥ptima de clusters y m√©todo a elegir -------------------------------------------------------------------------------
 ###
 
-#prueba mÈtodo 1 - paquete clValid
+#prueba m√©todo 1 - paquete clValid
 intern <- clValid(datos_est, nClust = 2:10, 
                   clMethods = c("hierarchical","kmeans","pam",'clara'),
                   validation = "internal")
@@ -135,7 +132,7 @@ summary(intern)
 #plot(intern)
 
 
-#prueba mÈtodo 2 - paquete NbClust link -> https://degreesofbelief.roryquinn.com/clustering-analysis-r-part-1
+#prueba m√©todo 2 - paquete NbClust link -> https://degreesofbelief.roryquinn.com/clustering-analysis-r-part-1
 res.nbclust <- NbClust(datos_est, distance = "euclidean",
                        min.nc = 2, max.nc = 10, 
                        method = "complete", index ="all") 
@@ -147,19 +144,19 @@ ggsave("num_cluster_index.png", num_cluster_index, units = "cm", dpi=500, width 
 res.nbclust$Best.nc
 
 
-## Pruebas definitivas para seleccionar el n˙mero de clusters: Silhouette & Elbow
-# Silhouette method: n∞ Ûptimo de clusters valor m·s alto,
-# corresponde al ancho m·ximo de la silueta
-# Cu·n buena es la asignaciÛn que se ha hecho de una observaciÛn comparando su similitud
+## Pruebas definitivas para seleccionar el n√∫mero de clusters: Silhouette & Elbow
+# Silhouette method: n¬∞ √≥ptimo de clusters valor m√°s alto,
+# corresponde al ancho m√°ximo de la silueta
+# Cu√°n buena es la asignaci√≥n que se ha hecho de una observaci√≥n comparando su similitud
 # con el resto de observaciones de su cluster frente a las de los otros clusters
 (psil<-fviz_nbclust(datos_est, pam, method = "silhouette"))
 fviz_nbclust(datos_est, hcut, method = "silhouette")
 fviz_nbclust(datos_est, kmeans, method = "silhouette")
 fviz_nbclust(datos_est, clara, method = "silhouette")
 
-# Elbow method: n∞ Ûptimo donde se "dobla" la curva, 
-# corresponde a la menor suma de cuadrados/variaciÛn intracluster
-# la curva se "quiebra" cuando aÒadir m·s cluster no sigue reduciendo la var. intracluster
+# Elbow method: n¬∞ √≥ptimo donde se "dobla" la curva, 
+# corresponde a la menor suma de cuadrados/variaci√≥n intracluster
+# la curva se "quiebra" cuando a√±adir m√°s cluster no sigue reduciendo la var. intracluster
 (pelbow<-fviz_nbclust(datos_est, pam, method = "wss"))
 fviz_nbclust(datos_est, hcut, method = "wss")
 fviz_nbclust(datos_est, kmeans, method = "wss")
@@ -173,20 +170,20 @@ ggsave("num_cluster_elbow_sil.png", num_cluster_elbow_sil, units = "cm", dpi=500
 
 
 ###
-### ...6] Aplicando PCA y mÈtodos de clustering -------------------------------------------------------------------------------------------------------
+### ...6] Aplicando PCA y m√©todos de clustering -------------------------------------------------------------------------------------------------------
 ###
 
 #
 # ... - 6.1. Primero PCA ----
 #
 
-#Para conocer la relaciÛn que existe entre las variabls evaluadas
+#Para conocer la relaci√≥n que existe entre las variabls evaluadas
 
 #Ejecutar PCA
 pca_datos <- prcomp(datos_est)
 summary(pca_datos)
 
-#Aporte de cada componnete a la explicaciÛn de la varianza total
+#Aporte de cada componnete a la explicaci√≥n de la varianza total
 (pca_varianza <- fviz_eig(pca_datos,
                           barfill = c("steelblue","steelblue","grey70","grey70","grey70","grey70","grey70"),
                           barcolor = c("steelblue","steelblue","grey70","grey70","grey70","grey70","grey70")) +
@@ -197,7 +194,7 @@ ggsave("pca_varianza.png", pca_varianza, units = "cm", dpi = 300, width = 15, he
 
 
 
-#Gr·fico de variables (circulo de correlaciones)
+#Gr√°fico de variables (circulo de correlaciones)
 fviz_pca_var(pca_datos)
 fviz_pca_contrib(pca_datos, choice = c("var"), 1)
 fviz_pca_contrib(pca_datos, choice = c("var"), 2)
@@ -213,7 +210,7 @@ fviz_pca_contrib(pca_datos, choice = c("var"), 2)
 ggsave("pca_variables.png", pca_variables, units = "cm", dpi = 400, width = 16, height = 11)
 
 
-#Gr·fico de individuos - No ocupar (por ahora)
+#Gr√°fico de individuos - No ocupar (por ahora)
 fviz_pca_ind(pca_datos)
 
 
@@ -239,9 +236,9 @@ pam_datos$diss
 pam_datos$call
 pam_datos$data
 
-# Gr·fico con agrupaciÛn de datos para primeras dos dimensiones
+# Gr√°fico con agrupaci√≥n de datos para primeras dos dimensiones
 (pam_grafico <- fviz_cluster(object = pam_datos, data = datos_est,
-                   ellipse.type = "norm", geom = "point", main = "Datos CERMAQ - VisualizaciÛn Cluster",
+                   ellipse.type = "norm", geom = "point", main = "Datos CERMAQ - Visualizaci√≥n Cluster",
                    stand = FALSE, 
                    palette = c("gold3","steelblue","grey40"),
                    addEllipses=TRUE, 
@@ -251,7 +248,7 @@ pam_datos$data
 
 #sin elipse
 fviz_cluster(object = pam_datos, data = datos_est,
-             main = "Datos CERMAQ - VisualizaciÛn Cluster",
+             main = "Datos CERMAQ - Visualizaci√≥n Cluster",
              stand = FALSE, 
              palette = c("gold3","steelblue","grey40")) +
   theme_bw() + 
@@ -261,7 +258,7 @@ fviz_cluster(object = pam_datos, data = datos_est,
 #sin elipse y nombre
 fviz_cluster(object = pam_datos, data = datos_est,
              geom = "point", 
-             main = "Datos CERMAQ - VisualizaciÛn Cluster",
+             main = "Datos CERMAQ - Visualizaci√≥n Cluster",
              stand = FALSE, 
              palette = c("gold3","steelblue","grey40")) +
   theme_bw() + 
@@ -289,11 +286,11 @@ fviz_pca_biplot(pca_datos,
 
 
 
-### ................6.2.1. ValidaciÛn PAM ----
+### ................6.2.1. Validaci√≥n PAM ----
 
 ### Silhouette
 
-# Valores cercanos a cero hablan de observaciones que est·n en las
+# Valores cercanos a cero hablan de observaciones que est√°n en las
 # fronteras de ambos clusters, solapadas.
 
 fviz_silhouette(sil.obj = pam_datos, print.summary = TRUE, palette = c("gold3","steelblue","grey40"),
@@ -307,9 +304,9 @@ neg_sil_index <- which(sil[, 'sil_width'] < 0)
 sil[neg_sil_index, , drop = FALSE]
 
 
-### Õndice Dunn
+### √çndice Dunn
 
-# (SeparaciÛn mÌn interclust / separaciÛn m·xima intracluster)
+# (Separaci√≥n m√≠n interclust / separaci√≥n m√°xima intracluster)
 # Se busca maximizar el indicador, numerador alto y denominador bajo
 pam_indices <- cluster.stats(d = dist(datos_est, method = "euclidean"), 
                              clustering = pam_datos$clustering)
@@ -340,7 +337,7 @@ plot(res.hc, cex = 0.6) # plot tree
 rect.hclust(res.hc, k = 2, border = 2:5) # add rectangle
 
 
-# lo mismo pero con mejor visualizaciÛn
+# lo mismo pero con mejor visualizaci√≥n
 # Compute hierarchical clustering and cut into 4 clusters
 (res <- hcut(datos_est, k = 2, stand = TRUE)
 )
@@ -388,14 +385,14 @@ fviz_pca_biplot(pca_BD.Aqch.selec, title="Variables y Clusters",label="var", hab
 
 
 
-### ................6.3.1. ValidaciÛn HCLUST ----
+### ................6.3.1. Validaci√≥n HCLUST ----
 
 ### Silhouette
 
 fviz_silhouette(sil.obj = res, print.summary = TRUE, palette = c("gold3","steelblue","grey40"),
                 ggtheme = theme_classic()) 
 
-### Õndice Dunn
+### √çndice Dunn
 
 hclust_indices <- cluster.stats(d = dist(datos_est, method = "euclidean"), 
                                 clustering = res$cluster)
@@ -439,7 +436,7 @@ res.km$nbclust
              labelsize = 8,
              repel = TRUE,
              show.clust.cent = TRUE) +
-  labs(title="IdentificaciÛn de clusters en la empresa Cermaq",
+  labs(title="Identificaci√≥n de clusters en la empresa Cermaq",
        subtitle="") +
   theme_minimal() + 
   theme(axis.line = element_line(size=.7),
@@ -451,7 +448,7 @@ ggsave("kmeans_cluster.png", kmeans_cluster, units = "cm", dpi=600, width = 28, 
 
 'fviz_cluster(object = res.km, data = datos_est,
              geom = "point", 
-             main = "Datos CERMAQ - VisualizaciÛn Cluster",
+             main = "Datos CERMAQ - Visualizaci√≥n Cluster",
              stand = FALSE, 
              palette = c("gold3","steelblue","grey40")) +
   theme_bw() + 
@@ -459,14 +456,14 @@ ggsave("kmeans_cluster.png", kmeans_cluster, units = "cm", dpi=600, width = 28, 
 '
 
 (biplot_kmeans_pca <- fviz_pca_biplot(pca_datos,
-                title="IdentificaciÛn de Clusters y Componentes Principales",
+                title="Identificaci√≥n de Clusters y Componentes Principales",
                 stand = FALSE,
                 label="var", 
                 habillage = as.factor(res.km$cluster),
                 palette=c("gold3","steelblue","grey40"), 
                 col.var="grey40",
                 repel = TRUE) +
-    labs(subtitle="Ciclos cerrados de salmÛn del Atl·ntico en la empresa **CERMAQ**",
+    labs(subtitle="Ciclos cerrados de salm√≥n del Atl√°ntico en la empresa **CERMAQ**",
          color="Clusters",
          fill="Clusters",
          shape="Clusters") +
@@ -488,9 +485,9 @@ ggsave("biplot_kmeans_pca.png", biplot_kmeans_pca, units = "cm", dpi=600, width 
 
 
 
-#biplot con geom_polygon para IMPRIMIR - hacer cuadro final con la descripciÛn de cada variable (usar paquete  patchwork())
+#biplot con geom_polygon para IMPRIMIR - hacer cuadro final con la descripci√≥n de cada variable (usar paquete  patchwork())
 (biplot_kmeans_pca_polygon <- fviz_pca_biplot(pca_datos,
-                                      title="IdentificaciÛn de Clusters y Componentes Principales",
+                                      title="Identificaci√≥n de Clusters y Componentes Principales",
                                       stand = FALSE,
                                       label="var", 
                                       habillage = as.factor(res.km$cluster),
@@ -498,7 +495,7 @@ ggsave("biplot_kmeans_pca.png", biplot_kmeans_pca, units = "cm", dpi=600, width 
                                       col.var="grey40",
                                       repel = TRUE) +
     geom_polygon(stat = "density_2d", alpha = 0.05, aes(fill=as.factor(res.km$cluster)), colour = NA) +
-    labs(subtitle="Ciclos cerrados de salmÛn del Atl·ntico en la empresa **CERMAQ**",
+    labs(subtitle="Ciclos cerrados de salm√≥n del Atl√°ntico en la empresa **CERMAQ**",
          color="Clusters",
          fill="Clusters",
          shape="Clusters") +
@@ -517,7 +514,7 @@ ggsave("biplot_kmeans_pca.png", biplot_kmeans_pca, units = "cm", dpi=600, width 
 )
 
 
-### ................6.4.1. ValidaciÛn KMEANS----
+### ................6.4.1. Validaci√≥n KMEANS----
 
 ### Silhouette
 fviz_silhouette(res.km)
@@ -544,7 +541,7 @@ kmeans_indices2$dunn
 
 
 ###
-### ...7] ComparaciÛn de modelos ---------------------------------------------------------------------------------------------------------------------
+### ...7] Comparaci√≥n de modelos ---------------------------------------------------------------------------------------------------------------------
 ###
 
 cbind(pam_indices, hclust_indices, kmeans_indices2)
@@ -604,7 +601,7 @@ head(bd_cluster_final, 10)
 (tipo_centro_graf <- x2 %>% 
   group_by(cat_centro) %>% 
   count() %>% 
-   #gr·fico
+   #gr√°fico
   ggplot(aes(cat_centro, n, fill=cat_centro, color=cat_centro)) +
   geom_col(alpha=.75) +
   geom_label(aes(label=n, color=cat_centro), fill="white") +
@@ -613,9 +610,9 @@ head(bd_cluster_final, 10)
   scale_y_continuous(expand = c(0.01, 0.01), limits = c(0,25)) +
   labs(title="Tipo de centro - Salar",
        subtitle="Centros de cultivo de la empresa CERMAQ",
-       caption ="ClasificaciÛn en base a resultados de an·lisis de cluster",
+       caption ="Clasificaci√≥n en base a resultados de an√°lisis de cluster",
        x="\nTipo de centro",
-       y="centros (n∞)\n") +
+       y="centros (n¬∞)\n") +
   theme_minimal() +
   theme(panel.grid.major.x = element_blank(),
         axis.line.x = element_line(),
@@ -629,7 +626,7 @@ ggsave("tipo_centro_graf.png", tipo_centro_graf, units = "cm", dpi=300, width = 
 
 
 
-#generar archivos seg˙n tipo de centro
+#generar archivos seg√∫n tipo de centro
 (cat_A <- x2 %>% 
   filter(cat_centro =="Cat. A") %>% 
     data.frame())
@@ -660,7 +657,7 @@ saveWorkbook(wb, file = "cat_a.xlsx", overwrite = TRUE)
 '
 
 #
-# xlsx.writeMultipleData - FunciÛn para generar excel con resultados en varias pestaÒas por tipo de centro (A, B y MIX)
+# xlsx.writeMultipleData - Funci√≥n para generar excel con resultados en varias pesta√±as por tipo de centro (A, B y MIX)
 #link -> http://www.sthda.com/english/wiki/r-xlsx-package-a-quick-start-guide-to-manipulate-excel-files-in-r
 
 # file : the path to the output file
@@ -702,12 +699,12 @@ write.xlsx(bd_cluster_salar_excel, "RESULTADOS_bdfull_cluster_salar_desde_R.xlsx
 
 
 ###
-### ...9] DescripciÛn de clusters  -------------------------------------------------------------------------------------------------------------------
+### ...9] Descripci√≥n de clusters  -------------------------------------------------------------------------------------------------------------------
 ###
 
-### DescripciÛn genral de los clusters
+### Descripci√≥n genral de los clusters
 
-# Gr·fico de barras
+# Gr√°fico de barras
 (descrip_gral_clusters <- bd_cluster_final %>% 
   group_by(KMEANS_res) %>% 
   summarize(sgr= mean(sgr),
@@ -715,7 +712,7 @@ write.xlsx(bd_cluster_salar_excel, "RESULTADOS_bdfull_cluster_salar_desde_R.xlsx
             kg_cosecha_smolt= mean(kg_cosecha_smolt),
             gr_ab_ton_cosecha= mean(gr_ab_ton_cosecha),
             lapso_engorda= mean(lapso_engorda),
-            baÒos_caligus= mean(banos_caligus),
+            ba√±os_caligus= mean(banos_caligus),
             mortalidad_acum = mean(mort_acum)*100
             ) %>% 
   pivot_longer(-KMEANS_res, names_to = "variables", values_to = "resultados") %>% 
@@ -772,7 +769,7 @@ ggsave("descrip_clusters_boxplot.png", descrip_clusters_boxplot, units = "cm", d
 
 
 
-# Gr·fico de DENSIDAD - Usar en versiÛn final para IMPRIMIR
+# Gr√°fico de DENSIDAD - Usar en versi√≥n final para IMPRIMIR
 (plot_cluster_variable <- bd_cluster_final %>% 
   select(KMEANS_res, sgr,gf3,kg_cosecha_smolt,gr_ab_ton_cosecha,lapso_engorda,banos_caligus,mort_acum) %>% 
   group_by(KMEANS_res) %>% 
@@ -784,9 +781,9 @@ ggsave("descrip_clusters_boxplot.png", descrip_clusters_boxplot, units = "cm", d
   scale_fill_manual(values = c("gold3","steelblue")) +
   scale_color_manual(values = c("gold3","steelblue")) +
   facet_wrap(~variables, scales = "free", ncol = 3) +
-  labs(title="Resultados productivos seg˙n cluster",
+  labs(title="Resultados productivos seg√∫n cluster",
        subtitle = "Ciclos del <span style='color:steelblue'>**Cluster 2**</span> se asocian a mejores resultados productivos y sanitarios  
-       en comparaciÛn a los del <span style='color:gold3'>**Cluster 1**</span>",
+       en comparaci√≥n a los del <span style='color:gold3'>**Cluster 1**</span>",
        y="",
        x="\nEn el **Eje X** se muestran los valores de cada variable evaluada\n",
        fill="Clusters",
@@ -808,30 +805,30 @@ ggsave("descrip_clusters_boxplot.png", descrip_clusters_boxplot, units = "cm", d
 
 
 ###
-### ... - 9.1. Gr·fico de resumen final - VersiÛn para INFORME y para IMPRIMIR ----
+### ... - 9.1. Gr√°fico de resumen final - Versi√≥n para INFORME y para IMPRIMIR ----
 ###
 
 library(patchwork)
 
-# VersiÛn para informe
-(gr·fico__PCA_CLUSTER_descr_FINAL <- (biplot_kmeans_pca_polygon + plot_cluster_variable))
-ggsave("gr·fico__PCA_CLUSTER_descr_FINAL.png", gr·fico__PCA_CLUSTER_descr_FINAL, units = "cm", dpi = 700, width = 33, height = 14)
+# Versi√≥n para informe
+(gr√°fico__PCA_CLUSTER_descr_FINAL <- (biplot_kmeans_pca_polygon + plot_cluster_variable))
+ggsave("gr√°fico__PCA_CLUSTER_descr_FINAL.png", gr√°fico__PCA_CLUSTER_descr_FINAL, units = "cm", dpi = 700, width = 33, height = 14)
 
 
-# VersiÛn para imprimir
-(gr·fico__PCA_CLUSTER_descr_FINAL_imprimir <- (plot_cluster_variable / biplot_kmeans_pca_polygon) +  plot_layout(nrow = 2, heights = c(1.3, 2)))
-ggsave("gr·fico__PCA_CLUSTER_descr_FINAL_imprimir.png", gr·fico__PCA_CLUSTER_descr_FINAL_imprimir, units = "cm", dpi = 700, width = 19, height = 25)
+# Versi√≥n para imprimir
+(gr√°fico__PCA_CLUSTER_descr_FINAL_imprimir <- (plot_cluster_variable / biplot_kmeans_pca_polygon) +  plot_layout(nrow = 2, heights = c(1.3, 2)))
+ggsave("gr√°fico__PCA_CLUSTER_descr_FINAL_imprimir.png", gr√°fico__PCA_CLUSTER_descr_FINAL_imprimir, units = "cm", dpi = 700, width = 19, height = 25)
 
 
 
 
 ###
-### ... - 9.2. DescripciÛn de cluster por aÒo de cierre ----
+### ... - 9.2. Descripci√≥n de cluster por a√±o de cierre ----
 ###
 
-# ParticipaciÛn porcentual de clustr por aÒo de cierre
+# Participaci√≥n porcentual de clustr por a√±o de cierre
 
-(cluster_aÒo_gral <- bd_cluster_final %>% 
+(cluster_a√±o_gral <- bd_cluster_final %>% 
   group_by(ano_cierre_final, KMEANS_res) %>%
   summarize(n = n()) %>% 
   mutate(Proporcion = n/sum(n),
@@ -842,10 +839,10 @@ ggsave("gr·fico__PCA_CLUSTER_descr_FINAL_imprimir.png", gr·fico__PCA_CLUSTER_des
   geom_col(position = "fill", alpha=0.75) +
   scale_fill_manual(values = c("gold3","steelblue")) +
   scale_color_manual(values = c("gold3","steelblue")) +
-  labs(title="ParticipaciÛn de cada cluster seg˙n aÒo de cierre",
+  labs(title="Participaci√≥n de cada cluster seg√∫n a√±o de cierre",
        subtitle="Salar - Ciclos cerrados", 
-       x="\nAÒo cierre",
-       y="ProporciÛn (%)\n",
+       x="\nA√±o cierre",
+       y="Proporci√≥n (%)\n",
        fill="Cluster",
        color0="Cluster") +
   scale_y_continuous(labels = percent, expand = c(0, 0.04))+
@@ -861,7 +858,7 @@ ggsave("gr·fico__PCA_CLUSTER_descr_FINAL_imprimir.png", gr·fico__PCA_CLUSTER_des
   geom_label(aes(label = texto), position="fill",alpha=.9, color= "white", size=3.5)
 )
 
-ggsave("cluster_aÒo_gral.png", cluster_aÒo_gral, units="cm", dpi=300, width=25, height=14)
+ggsave("cluster_a√±o_gral.png", cluster_a√±o_gral, units="cm", dpi=300, width=25, height=14)
 
 
 
@@ -886,7 +883,7 @@ ggsave("cluster_aÒo_gral.png", cluster_aÒo_gral, units="cm", dpi=300, width=25, 
 
 
 
-# Gr·fico resumen de resultados x aÒo de cierre (todas las variables juntas) - Exploratorio - NO USAR
+# Gr√°fico resumen de resultados x a√±o de cierre (todas las variables juntas) - Exploratorio - NO USAR
 bd_cluster_final %>% 
   select(ano_cierre_final, KMEANS_res, sgr,gf3,kg_cosecha_smolt,gr_ab_ton_cosecha,lapso_engorda,banos_caligus, mort_acum) %>% 
   group_by(ano_cierre_final, KMEANS_res) %>% 
@@ -910,8 +907,8 @@ bd_cluster_final %>%
 
 # Grafico individual por variable
 
-#SGR x aÒo de cierre
-(sgr_aÒo <- bd_cluster_final %>% 
+#SGR x a√±o de cierre
+(sgr_a√±o <- bd_cluster_final %>% 
   ggplot(aes(as.factor(KMEANS_res), sgr, fill=as.factor(KMEANS_res)))+
   geom_boxplot(outlier.colour = NA, alpha=.7) +
   geom_jitter(shape=21, size=3, alpha=.5, width = 0.2) +
@@ -927,11 +924,11 @@ bd_cluster_final %>%
         axis.ticks.x = element_line(color = "grey30"))
 )
 
-ggsave("sgr_aÒo.png", sgr_aÒo, units="cm", dpi=300, width=25, height=12)
+ggsave("sgr_a√±o.png", sgr_a√±o, units="cm", dpi=300, width=25, height=12)
 
 
-#GF3 x aÒo de cierre
-(gf3_aÒo <- bd_cluster_final %>% 
+#GF3 x a√±o de cierre
+(gf3_a√±o <- bd_cluster_final %>% 
   ggplot(aes(as.factor(KMEANS_res), gf3, fill=as.factor(KMEANS_res)))+
   geom_boxplot(outlier.colour = NA, alpha=.7) +
   geom_jitter(shape=21, size=3, alpha=.5, width = 0.2) +
@@ -947,11 +944,11 @@ ggsave("sgr_aÒo.png", sgr_aÒo, units="cm", dpi=300, width=25, height=12)
         axis.ticks.x = element_line(color = "grey30"))
 )
 
-ggsave("gf3_aÒo.png", gf3_aÒo, units="cm", dpi=300, width=25, height=12)
+ggsave("gf3_a√±o.png", gf3_a√±o, units="cm", dpi=300, width=25, height=12)
 
 
-#Productividad x aÒo de cierre
-(prod_aÒo <- bd_cluster_final %>% 
+#Productividad x a√±o de cierre
+(prod_a√±o <- bd_cluster_final %>% 
   ggplot(aes(as.factor(KMEANS_res), kg_cosecha_smolt, fill=as.factor(KMEANS_res)))+
   geom_boxplot(outlier.colour = NA, alpha=.7) +
   geom_jitter(shape=21, size=3, alpha=.5, width = 0.2) +
@@ -968,18 +965,18 @@ ggsave("gf3_aÒo.png", gf3_aÒo, units="cm", dpi=300, width=25, height=12)
         axis.ticks.x = element_line(color = "grey30"))
 )
 
-ggsave("prod_aÒo.png", prod_aÒo, units="cm", dpi=300, width=25, height=12)
+ggsave("prod_a√±o.png", prod_a√±o, units="cm", dpi=300, width=25, height=12)
 
 
-#Uso AB x aÒo de cierre
-(ab_aÒo <- bd_cluster_final %>% 
+#Uso AB x a√±o de cierre
+(ab_a√±o <- bd_cluster_final %>% 
   ggplot(aes(as.factor(KMEANS_res), gr_ab_ton_cosecha, fill=as.factor(KMEANS_res)))+
   geom_boxplot(outlier.colour = NA, alpha=.7) +
   geom_jitter(shape=21, size=3, alpha=.5, width = 0.2) +
   scale_fill_manual(values = c("gold3","steelblue")) +
   scale_y_continuous(limits = c(-0.1,1800))+
   facet_grid(~ano_cierre_final, scales = "free",space = "free_x") +
-  labs(title="Indicador uso de antibiÛticos",
+  labs(title="Indicador uso de antibi√≥ticos",
        x="\n Clusters",
        y="gr_ab_ton_cosecha\n") +
   theme_light() +
@@ -989,20 +986,20 @@ ggsave("prod_aÒo.png", prod_aÒo, units="cm", dpi=300, width=25, height=12)
         axis.ticks.x = element_line(color = "grey30"))
 )
 
-ggsave("ab_aÒo.png", ab_aÒo, units="cm", dpi=300, width=25, height=12)
+ggsave("ab_a√±o.png", ab_a√±o, units="cm", dpi=300, width=25, height=12)
 
 
-#BaÒos caligus x aÒo de cierre
-(baÒos_aÒo <- bd_cluster_final %>% 
+#Ba√±os caligus x a√±o de cierre
+(ba√±os_a√±o <- bd_cluster_final %>% 
   ggplot(aes(as.factor(KMEANS_res), banos_caligus, fill=as.factor(KMEANS_res)))+
   geom_boxplot(outlier.colour = NA, alpha=.7) +
   geom_jitter(shape=21, size=3, alpha=.5, width = 0.2) +
   scale_fill_manual(values = c("gold3","steelblue")) +
   scale_y_continuous(limits = c(0,28))+
   facet_grid(~ano_cierre_final, scales = "free",space = "free_x") +
-  labs(title="BaÒos Caligus",
+  labs(title="Ba√±os Caligus",
        x="\n Clusters",
-       y="n∞\n") +
+       y="n¬∞\n") +
   theme_light() +
   theme(legend.position = "none",
         panel.grid.major.x = element_blank(),
@@ -1010,11 +1007,11 @@ ggsave("ab_aÒo.png", ab_aÒo, units="cm", dpi=300, width=25, height=12)
         axis.ticks.x = element_line(color = "grey30"))
 )
 
-ggsave("baÒos_aÒo.png", baÒos_aÒo, units="cm", dpi=300, width=25, height=12)
+ggsave("ba√±os_a√±o.png", ba√±os_a√±o, units="cm", dpi=300, width=25, height=12)
 
 
-#lapso engorda x aÒo de cierre
-(lapso_aÒo <- bd_cluster_final %>% 
+#lapso engorda x a√±o de cierre
+(lapso_a√±o <- bd_cluster_final %>% 
   ggplot(aes(as.factor(KMEANS_res), lapso_engorda, fill=as.factor(KMEANS_res)))+
   geom_boxplot(outlier.colour = NA, alpha=.7) +
   geom_jitter(shape=21, size=3, alpha=.5, width = 0.2) +
@@ -1023,7 +1020,7 @@ ggsave("baÒos_aÒo.png", baÒos_aÒo, units="cm", dpi=300, width=25, height=12)
   facet_grid(~ano_cierre_final, scales = "free",space = "free_x") +
   labs(title="Lapso engorda",
        x="\n Clusters",
-       y="Meses (n∞)\n") +
+       y="Meses (n¬∞)\n") +
   theme_light() +
   theme(legend.position = "none",
         panel.grid.major.x = element_blank(),
@@ -1031,11 +1028,11 @@ ggsave("baÒos_aÒo.png", baÒos_aÒo, units="cm", dpi=300, width=25, height=12)
         axis.ticks.x = element_line(color = "grey30"))
 )
 
-ggsave("lapso_aÒo.png", lapso_aÒo, units="cm", dpi=300, width=25, height=12)
+ggsave("lapso_a√±o.png", lapso_a√±o, units="cm", dpi=300, width=25, height=12)
 
 
-#lapso engorda x aÒo de cierre
-(mort_aÒo <- bd_cluster_final %>% 
+#lapso engorda x a√±o de cierre
+(mort_a√±o <- bd_cluster_final %>% 
   ggplot(aes(as.factor(KMEANS_res), mort_acum, fill=as.factor(KMEANS_res)))+
   geom_boxplot(outlier.colour = NA, alpha=.7) +
   geom_jitter(shape=21, size=3, alpha=.5, width = 0.2) +
@@ -1052,7 +1049,7 @@ ggsave("lapso_aÒo.png", lapso_aÒo, units="cm", dpi=300, width=25, height=12)
         axis.ticks.x = element_line(color = "grey30"))
 )
 
-ggsave("mort_aÒo.png", mort_aÒo, units="cm", dpi=300, width=25, height=12)
+ggsave("mort_a√±o.png", mort_a√±o, units="cm", dpi=300, width=25, height=12)
 
 
 
@@ -1061,7 +1058,7 @@ ggsave("mort_aÒo.png", mort_aÒo, units="cm", dpi=300, width=25, height=12)
 
 #########################################################+
 ###
-###       ETAPA 2: AN¡LISIS DE RIESGO     ------------------------------------------------------------------------------------------------------------------------------------
+###       ETAPA 2: AN√ÅLISIS DE RIESGO     ------------------------------------------------------------------------------------------------------------------------------------
 ###
 ########################################################+
 
@@ -1133,8 +1130,8 @@ curve(dgamma(x, shape=res1.mort$fittedParams[["shape"]], rate = res1.mort$fitted
 quantile(simular, c(0.05, 0.50, 0.95))
 
 
-(valor_inf<- qgamma(0.0001,shape=res1.mort$fittedParams[["shape"]], rate = res1.mort$fittedParams[["rate"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
-(valor_sup<- qgamma(0.9999,shape=res1.mort$fittedParams[["shape"]], rate = res1.mort$fittedParams[["rate"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
+(valor_inf<- qgamma(0.0001,shape=res1.mort$fittedParams[["shape"]], rate = res1.mort$fittedParams[["rate"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
+(valor_sup<- qgamma(0.9999,shape=res1.mort$fittedParams[["shape"]], rate = res1.mort$fittedParams[["rate"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
 
 
 min(simular)
@@ -1148,11 +1145,11 @@ median(simular)
    geom_histogram(aes(simular),fill="gold3", color="grey95", binwidth = 0.025) +
    scale_y_continuous(expand = c(0,0)) +
    scale_x_continuous(breaks = seq(0,1,0.05), labels = percent, expand = c(0,0)) +
-   labs(title = "An·lisis de riesgo: Mortalidad Acumulada (%)",
+   labs(title = "An√°lisis de riesgo: Mortalidad Acumulada (%)",
         subtitle = "CLUSTER 1 - SALAR",
         x="\nMortalidad Acum. (%)",
         y="Frecuencia\n",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = valor_5pct, color="red", lty=2, lwd=.7) +
    geom_vline(xintercept = valor_95pct, color="red", lty=2, lwd=.7) +
    theme_minimal() +
@@ -1229,11 +1226,11 @@ head(bd.prob.mort)
    geom_area(aes(prob.mort.x, prob.mort.y), fill="gold3", alpha=.15) +
    scale_y_continuous(limits = c(0,1.05),breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
    scale_x_continuous(breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
-   labs(title = "An·lisis de riesgo: Probabilidad de mortalidad > 9,8%",
+   labs(title = "An√°lisis de riesgo: Probabilidad de mortalidad > 9,8%",
         subtitle = "CLUSTER 1 - SALAR",
         x="\nMortalidad Acum. (%)",
         y="Prob. Acum.",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 0.098, color="red", lty=2, lwd=.7) +
    #geom_vline(xintercept = c(0.145, 0.05), color="grey60", lty=2, lwd=.5) +
    theme_minimal() +
@@ -1315,8 +1312,8 @@ curve(dlogis(x, location = res1.prod$fittedParams[["location"]], scale = res1.pr
 quantile(simular.prod, c(0.05, 0.50, 0.95))
 
 
-(valor_inf<- qlogis(0.0001, location = res1.prod$fittedParams[["location"]], scale = res1.prod$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
-(valor_sup<- qlogis(0.9999, location = res1.prod$fittedParams[["location"]], scale = res1.prod$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
+(valor_inf<- qlogis(0.0001, location = res1.prod$fittedParams[["location"]], scale = res1.prod$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
+(valor_sup<- qlogis(0.9999, location = res1.prod$fittedParams[["location"]], scale = res1.prod$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
 
 
 #estadisticos
@@ -1331,11 +1328,11 @@ median(simular.prod)
    geom_histogram(aes(simular.prod),fill="gold3", color="grey95", binwidth = 0.2) +
    scale_y_continuous(expand = c(0,0)) +
    scale_x_continuous(expand = c(0,0), breaks = seq(1,7,0.5)) +
-   labs(title = "An·lisis de riesgo: SimulaciÛn de Productividad (Kg. Cosecha/smolt)",
+   labs(title = "An√°lisis de riesgo: Simulaci√≥n de Productividad (Kg. Cosecha/smolt)",
         subtitle = "CLUSTER 1 - SALAR",
         x="\nKg. Cosecha/smolt",
         y="Frecuencia\n",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = valor_5pct, color="red", lty=2, lwd=.7) +
    geom_vline(xintercept = valor_95pct, color="red", lty=2, lwd=.7) +
    theme_minimal() +
@@ -1405,11 +1402,11 @@ head(bd.prob.prod)
    geom_area(aes(prob.prod.x, prob.prod.y), fill="gold3", alpha=.15) +
    scale_y_continuous(limits = c(0,1.05),breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
    scale_x_continuous(limits = c(1,6), breaks = seq(0,7,0.5), expand = c(0,0)) +
-   labs(title = "An·lisis de riesgo: Probabilidad de Productividad < 4.57 Kg.cosecha/smolt",
+   labs(title = "An√°lisis de riesgo: Probabilidad de Productividad < 4.57 Kg.cosecha/smolt",
         subtitle = "CLUSTER 1 - SALAR",
         x="\nKg.cosecha/smolt",
         y="Prob. Acum.",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 4.57, color="red", lty=2, lwd=.7) +
    theme_minimal() +
    theme(panel.grid.minor = element_blank(),
@@ -1421,7 +1418,7 @@ head(bd.prob.prod)
          axis.title = element_text(color = "grey40", size=10),
          plot.subtitle=element_text(size=10, color="gold3", face="bold"),
          plot.title=element_text(size=14, color="#333333")) +
-   #comentario y flecha: valor mÌnimo
+   #comentario y flecha: valor m√≠nimo
    geom_label(aes(x = 3.2 , y = ref_prod, label = str_glue("Probabilidad:\n {round(ref_prod*100,2)}%")),  hjust = 0, vjust = 0.5, 
               lineheight = 0.8, colour = "#555555", fill = "grey90", label.size = NA, size = 4) +
    geom_curve(aes(x = 4, y = ref_prod, xend = 4.35, yend = ref_prod), colour = "#555555", curvature = 0, size=0.5,
@@ -1441,7 +1438,7 @@ ggsave("cluster_1.prob.prod.salar.png", clu1.prob.prod.salar, width = 22.8, heig
 
 
 ###
-###   ...3] Uso de antibiÛticos  ---------------------------------------------------------------------------------------------------------------------------  
+###   ...3] Uso de antibi√≥ticos  ---------------------------------------------------------------------------------------------------------------------------  
 ### 
 
 #Histograma datos originales
@@ -1477,8 +1474,8 @@ valor_5pct<- qlogis(0.05, location = res1.ab$fittedParams[["location"]], scale =
 #Percentil 95
 valor_95pct<- qlogis(0.95, location = res1.ab$fittedParams[["location"]], scale = res1.ab$fittedParams[["scale"]], lower.tail=TRUE)
 
-valor_inf<- qlogis(0.0001, location = res1.ab$fittedParams[["location"]], scale = res1.ab$fittedParams[["scale"]], lower.tail=TRUE) #solo para ubicar el texto en el gr·fico
-valor_sup<- qlogis(0.999, location = res1.ab$fittedParams[["location"]], scale = res1.ab$fittedParams[["scale"]], lower.tail=TRUE) #solo para ubicar el texto en el gr·fico
+valor_inf<- qlogis(0.0001, location = res1.ab$fittedParams[["location"]], scale = res1.ab$fittedParams[["scale"]], lower.tail=TRUE) #solo para ubicar el texto en el gr√°fico
+valor_sup<- qlogis(0.999, location = res1.ab$fittedParams[["location"]], scale = res1.ab$fittedParams[["scale"]], lower.tail=TRUE) #solo para ubicar el texto en el gr√°fico
 
 
 #transformar a data frame
@@ -1494,11 +1491,11 @@ median(simular.ab)
    geom_histogram(aes(simular.ab),fill="gold3", color="grey95", binwidth = 100) +
    scale_y_continuous(expand = c(0,0)) +
    scale_x_continuous(expand = c(0,50), breaks = seq(0,3000,200), limits = c(-100,2900)) +
-   labs(title = "An·lisis de riesgo: SimulaciÛn uso de AntibiÛticos (Gr.Ab./ton. Cosechada)",
+   labs(title = "An√°lisis de riesgo: Simulaci√≥n uso de Antibi√≥ticos (Gr.Ab./ton. Cosechada)",
         subtitle = "CLUSTER 1 - SALAR",
         x="\nGr.Ab./ton. Cosechada",
         y="Frecuencia\n",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = valor_5pct, color="red", lty=2, lwd=.7) +
    geom_vline(xintercept = valor_95pct, color="red", lty=2, lwd=.7) +
    theme_minimal() +
@@ -1564,11 +1561,11 @@ head(bd.prob.ab)
    geom_area(aes(prob.ab.x, prob.ab.y), fill="gold3", alpha=.15) +
    scale_y_continuous(limits = c(0,1),breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
    scale_x_continuous(limits = c(-1,2600), breaks = seq(0,2600,200), expand = c(0.002,0.002)) +
-   labs(title = "An·lisis de riesgo: Probabilidad de uso de antibiÛticos > 250 Gr.Ab/ton.cosechada",
+   labs(title = "An√°lisis de riesgo: Probabilidad de uso de antibi√≥ticos > 250 Gr.Ab/ton.cosechada",
         subtitle = "CLUSTER 1 - SALAR",
         x="\nGr.Ab/ton.cosechada",
         y="Prob. Acum.",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 250, color="red", lty=2, lwd=.7) +
    theme_minimal() +
    theme(panel.grid.minor = element_blank(),
@@ -1580,7 +1577,7 @@ head(bd.prob.ab)
          axis.title = element_text(color = "grey40", size=10),
          plot.subtitle=element_text(size=10, color="gold3", face="bold"),
          plot.title=element_text(size=14, color="#333333")) +
-   #comentario y flecha: valor mÌnimo
+   #comentario y flecha: valor m√≠nimo
    geom_label(aes(x = 450 , y = ref_ab, label = str_glue("Probabilidad:\n  {round(ref_ab*100, 2)}%")),  hjust = 0, vjust = 0.5, 
               lineheight = 0.8, colour = "#555555", fill = "grey90", label.size = NA, size = 4) +
    geom_curve(aes(x = 445, y = ref_ab, xend = 308, yend = ref_ab), colour = "#555555", curvature = 0, size=0.5,
@@ -1598,7 +1595,7 @@ ggsave("cluster_1.prob.ab.salar.png", clu1.prob.ab.salar, width = 22.8, height =
 
 
 ### 
-### ... 4] BaÒos Caligus  ------------------------------------------------------------------------------------------------------------------------------------  
+### ... 4] Ba√±os Caligus  ------------------------------------------------------------------------------------------------------------------------------------  
 ### 
 
 
@@ -1606,49 +1603,49 @@ ggsave("cluster_1.prob.ab.salar.png", clu1.prob.ab.salar, width = 22.8, height =
 hist(bd_cluster1$banos_caligus)
 
 #ajustar a dist. de probabilidad
-res1.baÒo<-fit.cont(data2fit = bd_cluster1$banos_caligus) 
-res1.baÒo
+res1.ba√±o<-fit.cont(data2fit = bd_cluster1$banos_caligus) 
+res1.ba√±o
 
-res1.baÒo$fittedParams[["mean"]]
-res1.baÒo$fittedParams[["sd"]]
+res1.ba√±o$fittedParams[["mean"]]
+res1.ba√±o$fittedParams[["sd"]]
 
 #---------------------------------------------------+
 ## 4.1- Simular 5000 resultado en base a Dist.Prob. ----
 #---------------------------------------------------+
 #Simular 5000 resultados posibles en base a parametros fijos 
-simular.baÒo<- rnorm(5000, mean = res1.baÒo$fittedParams[["mean"]], sd = res1.baÒo$fittedParams[["sd"]]) 
+simular.ba√±o<- rnorm(5000, mean = res1.ba√±o$fittedParams[["mean"]], sd = res1.ba√±o$fittedParams[["sd"]]) 
 
-hist(simular.baÒo, freq = FALSE, col="lightsalmon",main="Histograma",sub="Datos simulados; Repet=5000", breaks = 10)
+hist(simular.ba√±o, freq = FALSE, col="lightsalmon",main="Histograma",sub="Datos simulados; Repet=5000", breaks = 10)
 x<- seq(0,100, by=1)
-curve(dnorm(x, mean = res1.baÒo$fittedParams[["mean"]], sd = res1.baÒo$fittedParams[["sd"]]), col="blue",lwd=2,add=TRUE)
+curve(dnorm(x, mean = res1.ba√±o$fittedParams[["mean"]], sd = res1.ba√±o$fittedParams[["sd"]]), col="blue",lwd=2,add=TRUE)
 
 
 #Percentil 5 y 95
-valor_5pct<- qnorm(0.05, mean = res1.baÒo$fittedParams[["mean"]], sd = res1.baÒo$fittedParams[["sd"]], lower.tail=TRUE) 
-valor_95pct<- qnorm(0.95, mean = res1.baÒo$fittedParams[["mean"]], sd = res1.baÒo$fittedParams[["sd"]], lower.tail=TRUE)
+valor_5pct<- qnorm(0.05, mean = res1.ba√±o$fittedParams[["mean"]], sd = res1.ba√±o$fittedParams[["sd"]], lower.tail=TRUE) 
+valor_95pct<- qnorm(0.95, mean = res1.ba√±o$fittedParams[["mean"]], sd = res1.ba√±o$fittedParams[["sd"]], lower.tail=TRUE)
 
 #Valor inferior y superior
-valor_inf<- qnorm(0.0001, mean = res1.baÒo$fittedParams[["mean"]], sd = res1.baÒo$fittedParams[["sd"]], lower.tail=TRUE) #solo para ubicar el texto en el gr·fico
-valor_sup<- qnorm(0.999, mean = res1.baÒo$fittedParams[["mean"]], sd = res1.baÒo$fittedParams[["sd"]], lower.tail=TRUE) #solo para ubicar el texto en el gr·fico
+valor_inf<- qnorm(0.0001, mean = res1.ba√±o$fittedParams[["mean"]], sd = res1.ba√±o$fittedParams[["sd"]], lower.tail=TRUE) #solo para ubicar el texto en el gr√°fico
+valor_sup<- qnorm(0.999, mean = res1.ba√±o$fittedParams[["mean"]], sd = res1.ba√±o$fittedParams[["sd"]], lower.tail=TRUE) #solo para ubicar el texto en el gr√°fico
 
 
 #transformar a data frame
-max(simular.baÒo)
-min(simular.baÒo)
-mean(simular.baÒo)
-median(simular.baÒo)
+max(simular.ba√±o)
+min(simular.ba√±o)
+mean(simular.ba√±o)
+median(simular.ba√±o)
 
 
 # Grafico resultados simulados ----
-(clu1.sim.baÒo.salar <- ggplot(as.data.frame(simular.baÒo))+
-   geom_histogram(aes(simular.baÒo),fill="gold3", color="grey95", binwidth = 2) +
+(clu1.sim.ba√±o.salar <- ggplot(as.data.frame(simular.ba√±o))+
+   geom_histogram(aes(simular.ba√±o),fill="gold3", color="grey95", binwidth = 2) +
    scale_y_continuous(expand = c(0,0)) +
-   scale_x_continuous(breaks = seq(0,36,2), limits = c(-1,max(simular.baÒo))) +
-   labs(title = "An·lisis de riesgo: SimulaciÛn total baÒos antiparasitarios por ciclo",
+   scale_x_continuous(breaks = seq(0,36,2), limits = c(-1,max(simular.ba√±o))) +
+   labs(title = "An√°lisis de riesgo: Simulaci√≥n total ba√±os antiparasitarios por ciclo",
         subtitle = "CLUSTER 1 - SALAR",
-        x="\nBaÒos (n∞)",
+        x="\nBa√±os (n¬∞)",
         y="Frecuencia\n",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 0, color="red", lty=2, lwd=.7) +
    geom_vline(xintercept = valor_95pct, color="red", lty=2, lwd=.7) +
    theme_minimal() +
@@ -1665,11 +1662,11 @@ median(simular.baÒo)
    annotate("rect", xmin = -1, xmax = 0, ymin = 1230, ymax = 1280, alpha = .25) +
    annotate("text", x = -0.5, y = 1255, label="P5", size=3) +
    #comentario percentil 95
-   annotate("rect", xmin = valor_95pct, xmax = max(simular.baÒo), ymin = 1230, ymax = 1280, alpha = .25) +
+   annotate("rect", xmin = valor_95pct, xmax = max(simular.ba√±o), ymin = 1230, ymax = 1280, alpha = .25) +
    annotate("text", x = (valor_95pct+2), y =1255, label="Percentil 95", size=3)
 )
 
-ggsave("cluster_1.sim.hist.baÒo.salar.png", clu1.sim.baÒo.salar, width = 22.8, height = 11.5, units = "cm", dpi=500) 
+ggsave("cluster_1.sim.hist.ba√±o.salar.png", clu1.sim.ba√±o.salar, width = 22.8, height = 11.5, units = "cm", dpi=500) 
 
 
 
@@ -1677,51 +1674,51 @@ ggsave("cluster_1.sim.hist.baÒo.salar.png", clu1.sim.baÒo.salar, width = 22.8, h
 ### Curvas de probabilidad acumulada ----
 
 # F(x) de densidad
-dnorm(10, mean = res1.baÒo$fittedParams[["mean"]], sd = res1.baÒo$fittedParams[["sd"]], log=FALSE) #probabilidad de tener un resultado = 
+dnorm(10, mean = res1.ba√±o$fittedParams[["mean"]], sd = res1.ba√±o$fittedParams[["sd"]], log=FALSE) #probabilidad de tener un resultado = 
 
 # F(x) de probabilidad
-pnorm(10, mean = res1.baÒo$fittedParams[["mean"]], sd = res1.baÒo$fittedParams[["sd"]], 
+pnorm(10, mean = res1.ba√±o$fittedParams[["mean"]], sd = res1.ba√±o$fittedParams[["sd"]], 
        lower.tail=TRUE, log.p = FALSE) #Prob resultado <
 
-(ref_baÒo <- pnorm(10, mean = res1.baÒo$fittedParams[["mean"]], sd = res1.baÒo$fittedParams[["sd"]], 
+(ref_ba√±o <- pnorm(10, mean = res1.ba√±o$fittedParams[["mean"]], sd = res1.ba√±o$fittedParams[["sd"]], 
        lower.tail=FALSE, log.p = FALSE) #Prob resultado > 10
 )
 
 
 #Probabilidad resultado entre 2 valores
-vProbX <- pnorm(c(3,6), mean = res1.baÒo$fittedParams[["mean"]], sd = res1.baÒo$fittedParams[["sd"]], lower.tail=TRUE) 
+vProbX <- pnorm(c(3,6), mean = res1.ba√±o$fittedParams[["mean"]], sd = res1.ba√±o$fittedParams[["sd"]], lower.tail=TRUE) 
 vProbX
 miProbX=vProbX[2]-vProbX[1]
 miProbX*100
 
 
-mean(simular.baÒo >= 6)
-mean(simular.baÒo >= 8)
-mean(simular.baÒo >= 10)
-mean(simular.baÒo >= 12)
-mean(simular.baÒo >= 15)
+mean(simular.ba√±o >= 6)
+mean(simular.ba√±o >= 8)
+mean(simular.ba√±o >= 10)
+mean(simular.ba√±o >= 12)
+mean(simular.ba√±o >= 15)
 
 
 
 
 #datos probailidad acum.
-prob.baÒo <- curve(1-pnorm(x, mean = res1.baÒo$fittedParams[["mean"]], sd = res1.baÒo$fittedParams[["sd"]]), xlim=c(-1,26))
+prob.ba√±o <- curve(1-pnorm(x, mean = res1.ba√±o$fittedParams[["mean"]], sd = res1.ba√±o$fittedParams[["sd"]]), xlim=c(-1,26))
 
-bd.prob.baÒo <- data.frame(prob.baÒo$x, prob.baÒo$y)
-head(bd.prob.baÒo)
+bd.prob.ba√±o <- data.frame(prob.ba√±o$x, prob.ba√±o$y)
+head(bd.prob.ba√±o)
 
 
 # Grafico Prob. Acum. Mortalidad ----
-(clu1.prob.baÒo.salar <- ggplot(bd.prob.baÒo)+
-   geom_line(aes(prob.baÒo.x, prob.baÒo.y), lwd=1.5, color="gold3") +
-   geom_area(aes(prob.baÒo.x, prob.baÒo.y), fill="gold3", alpha=.15) +
+(clu1.prob.ba√±o.salar <- ggplot(bd.prob.ba√±o)+
+   geom_line(aes(prob.ba√±o.x, prob.ba√±o.y), lwd=1.5, color="gold3") +
+   geom_area(aes(prob.ba√±o.x, prob.ba√±o.y), fill="gold3", alpha=.15) +
    scale_y_continuous(limits = c(0,1),breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
    scale_x_continuous(limits = c(-1,36), breaks = seq(0,36,2), expand = c(0,0)) +
-   labs(title = "An·lisis de riesgo: Probabilidad de baÒos antiparasitarios en el ciclo > 10",
+   labs(title = "An√°lisis de riesgo: Probabilidad de ba√±os antiparasitarios en el ciclo > 10",
         subtitle = "CLUSTER 1 - SALAR",
-        x="\nbaÒos (n∞)",
+        x="\nba√±os (n¬∞)",
         y="Prob. Acum.",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 10, color="red", lty=2, lwd=.7) +
    theme_minimal() +
    theme(panel.grid.minor = element_blank(),
@@ -1733,16 +1730,16 @@ head(bd.prob.baÒo)
          axis.title = element_text(color = "grey40", size=10),
          plot.subtitle=element_text(size=10, color="gold3", face="bold"),
          plot.title=element_text(size=14, color="#333333")) +
-   #comentario y flecha: valor mÌnimo
-   geom_label(aes(x = 12.5 , y = ref_baÒo, label = str_glue("Probabilidad:\n {round(ref_baÒo*100,2)}% ")),  hjust = 0, vjust = 0.5, 
+   #comentario y flecha: valor m√≠nimo
+   geom_label(aes(x = 12.5 , y = ref_ba√±o, label = str_glue("Probabilidad:\n {round(ref_ba√±o*100,2)}% ")),  hjust = 0, vjust = 0.5, 
               lineheight = 0.8, colour = "#555555", fill = "grey90", label.size = NA, size = 4) +
-   geom_curve(aes(x = 12.4, y = ref_baÒo, xend = 10.2, yend = ref_baÒo), colour = "#555555", curvature = 0, size=0.5,
+   geom_curve(aes(x = 12.4, y = ref_ba√±o, xend = 10.2, yend = ref_ba√±o), colour = "#555555", curvature = 0, size=0.5,
               arrow = arrow(length = unit(0.03, "npc"))) +
    annotate("segment", x = 0, xend = 0, y = 0, yend = 0.1, colour = "grey60", lwd=.8) +
    annotate("segment", x = 9.1, xend = 9.1, y = 0, yend = 0.1, colour = "grey60", lwd=.8)
 )
 
-ggsave("cluster_1.prob.baÒo.salar.png", clu1.prob.baÒo.salar, width = 22.8, height = 11.5, units = "cm", dpi=500)
+ggsave("cluster_1.prob.ba√±o.salar.png", clu1.prob.ba√±o.salar, width = 22.8, height = 11.5, units = "cm", dpi=500)
 
 
 
@@ -1778,8 +1775,8 @@ curve(dnorm(x, mean = res1.gf3$fittedParams[["mean"]], sd = res1.gf3$fittedParam
 (valor_5pct<- qnorm(0.05, mean = res1.gf3$fittedParams[["mean"]], sd = res1.gf3$fittedParams[["sd"]], lower.tail=TRUE) )
 (valor_95pct<- qnorm(0.95, mean = res1.gf3$fittedParams[["mean"]], sd = res1.gf3$fittedParams[["sd"]], lower.tail=TRUE) )
 
-(valor_inf<- qnorm(0.0001, mean = res1.gf3$fittedParams[["mean"]], sd = res1.gf3$fittedParams[["sd"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
-(valor_sup<- qnorm(0.999, mean = res1.gf3$fittedParams[["mean"]], sd = res1.gf3$fittedParams[["sd"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
+(valor_inf<- qnorm(0.0001, mean = res1.gf3$fittedParams[["mean"]], sd = res1.gf3$fittedParams[["sd"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
+(valor_sup<- qnorm(0.999, mean = res1.gf3$fittedParams[["mean"]], sd = res1.gf3$fittedParams[["sd"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
 
 
 #transformar a data frame
@@ -1794,11 +1791,11 @@ median(simular.gf3)
    geom_histogram(aes(simular.gf3),fill="gold3", color="grey95", binwidth = 0.1) +
    scale_y_continuous(expand = c(0,0), breaks = seq(0,1500,250)) +
    scale_x_continuous(expand = c(0,0), breaks = seq(0,2.8,0.2)) +
-   labs(title = "An·lisis de riesgo: SimulaciÛn de GF3",
+   labs(title = "An√°lisis de riesgo: Simulaci√≥n de GF3",
         subtitle = "CLUSTER 1 - SALAR",
         x="\nGF3",
         y="Frecuencia\n",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = valor_5pct, color="red", lty=2, lwd=.7) +
    geom_vline(xintercept = valor_95pct, color="red", lty=2, lwd=.7) +
    theme_minimal() +
@@ -1858,11 +1855,11 @@ head(bd.prob.prod)
    geom_area(aes(prob.prod.x, prob.prod.y), fill="gold3", alpha=.15) +
    scale_y_continuous(limits = c(0,1),breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
    scale_x_continuous(limits = c(1.2,2.8), breaks = seq(1,3,0.2), expand = c(0,0)) +
-   labs(title = "An·lisis de riesgo: Probabilidad de GF3 < 2.1",
+   labs(title = "An√°lisis de riesgo: Probabilidad de GF3 < 2.1",
         subtitle = "CLUSTER 1 - SALAR",
         x="\nGF3",
         y="Prob. Acum.",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 2.1, color="red", lty=2, lwd=.7) +
    theme_minimal() +
    theme(panel.grid.minor = element_blank(),
@@ -1874,7 +1871,7 @@ head(bd.prob.prod)
          axis.title = element_text(color = "grey40", size=10),
          plot.subtitle=element_text(size=10, color="gold3", face="bold"),
          plot.title=element_text(size=14, color="#333333")) +
-   #comentario y flecha: valor mÌnimo
+   #comentario y flecha: valor m√≠nimo
    geom_label(aes(x = 1.76 , y = ref_gf3, label = str_glue("Probabilidad:\n {round(ref_gf3*100,2)}%")),  hjust = 0, vjust = 0.5, 
               lineheight = 0.8, colour = "#555555", fill = "grey90", label.size = NA, size = 4) +
    geom_curve(aes(x = 2, y = ref_gf3, xend = 2.08, yend = ref_gf3), colour = "#555555", curvature = 0, size=0.5,
@@ -1918,8 +1915,8 @@ curve(dweibull(x, shape = res1.sgr$fittedParams[["shape"]], scale = res1.sgr$fit
 (valor_5pct<- qweibull(0.05, shape = res1.sgr$fittedParams[["shape"]], scale = res1.sgr$fittedParams[["scale"]], lower.tail=TRUE) )
 (valor_95pct<- qweibull(0.95, shape = res1.sgr$fittedParams[["shape"]], scale = res1.sgr$fittedParams[["scale"]], lower.tail=TRUE) )
 
-(valor_inf<- qweibull(0.0001, shape = res1.sgr$fittedParams[["shape"]], scale = res1.sgr$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
-(valor_sup<- qweibull(0.999, shape = res1.sgr$fittedParams[["shape"]], scale = res1.sgr$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
+(valor_inf<- qweibull(0.0001, shape = res1.sgr$fittedParams[["shape"]], scale = res1.sgr$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
+(valor_sup<- qweibull(0.999, shape = res1.sgr$fittedParams[["shape"]], scale = res1.sgr$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
 
 
 #transformar a data frame
@@ -1934,11 +1931,11 @@ median(simular.sgr)
    geom_histogram(aes(simular.gf3),fill="gold3", color="grey95", binwidth = 0.05) +
    scale_y_continuous(expand = c(0,0), breaks = seq(0,3000,250)) +
    scale_x_continuous(expand = c(0,0), breaks = seq(0, 2.8, 0.1)) +
-   labs(title = "An·lisis de riesgo: SimulaciÛn de SGR",
+   labs(title = "An√°lisis de riesgo: Simulaci√≥n de SGR",
         subtitle = "CLUSTER 1 - SALAR",
         x="\n SGR",
         y="Frecuencia\n",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = valor_5pct, color="red", lty=2, lwd=.7) +
    geom_vline(xintercept = valor_95pct, color="red", lty=2, lwd=.7) +
    theme_minimal() +
@@ -1999,11 +1996,11 @@ head(bd.prob.sgr)
    geom_area(aes(prob.sgr.x, prob.sgr.y), fill="gold3", alpha=.15) +
    scale_y_continuous(limits = c(0,1.05),breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
    scale_x_continuous(limits = c(0.2, 1.2), breaks = seq(0.2,3,0.2), expand = c(0.01,0.01)) +
-   labs(title = "An·lisis de riesgo: Probabilidad de SGR < 0.85",
+   labs(title = "An√°lisis de riesgo: Probabilidad de SGR < 0.85",
         subtitle = "CLUSTER 1 - SALAR",
         x="\nSGR",
         y="Prob. Acum.",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 0.85, color="red", lty=2, lwd=.7) +
    theme_minimal() +
    theme(panel.grid.minor = element_blank(),
@@ -2015,7 +2012,7 @@ head(bd.prob.sgr)
          axis.title = element_text(color = "grey40", size=10),
          plot.subtitle=element_text(size=10, color="gold3", face="bold"),
          plot.title=element_text(size=14, color="#333333")) +
-   #comentario y flecha: valor mÌnimo
+   #comentario y flecha: valor m√≠nimo
    geom_label(aes(x = 0.58 , y = ref_sgr, label = str_glue("Probabilidad:\n {round(ref_sgr*100,2)}%")),  hjust = 0, vjust = 0.5, 
               lineheight = 0.8, colour = "#555555", fill = "grey90", label.size = NA, size = 4) +
    geom_curve(aes(x = 0.72, y = ref_sgr, xend = 0.84, yend = ref_sgr), colour = "#555555", curvature = 0, size=0.5,
@@ -2097,8 +2094,8 @@ curve(dgamma(x, shape=res2.mort$fittedParams[["shape"]], rate = res2.mort$fitted
 quantile(simular, c(0.05, 0.50, 0.95))
 
 
-(valor_inf<- qgamma(0.0001,shape=res2.mort$fittedParams[["shape"]], rate = res2.mort$fittedParams[["rate"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
-(valor_sup<- qgamma(0.9999,shape=res2.mort$fittedParams[["shape"]], rate = res2.mort$fittedParams[["rate"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
+(valor_inf<- qgamma(0.0001,shape=res2.mort$fittedParams[["shape"]], rate = res2.mort$fittedParams[["rate"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
+(valor_sup<- qgamma(0.9999,shape=res2.mort$fittedParams[["shape"]], rate = res2.mort$fittedParams[["rate"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
 
 
 min(simular)
@@ -2112,11 +2109,11 @@ median(simular)
     geom_histogram(aes(simular),fill="steelblue", color="grey95", binwidth = 0.025) +
     scale_y_continuous(expand = c(0,0), breaks = seq(0,900, 200)) +
     scale_x_continuous(breaks = seq(0,1,0.05), labels = percent, expand = c(0,0)) +
-    labs(title = "An·lisis de riesgo: Mortalidad Acumulada (%)",
+    labs(title = "An√°lisis de riesgo: Mortalidad Acumulada (%)",
          subtitle = "CLUSTER 2 - SALAR",
          x="\nMortalidad Acum. (%)",
          y="Frecuencia\n",
-         caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+         caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
     geom_vline(xintercept = valor_5pct, color="red", lty=2, lwd=.7) +
     geom_vline(xintercept = valor_95pct, color="red", lty=2, lwd=.7) +
     theme_minimal() +
@@ -2197,11 +2194,11 @@ head(bd.prob.mort)
     geom_area(aes(prob.mort.x, prob.mort.y), fill="steelblue", alpha=.15) +
     scale_y_continuous(limits = c(0,1),breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
     scale_x_continuous(breaks = seq(0,1,0.1), labels = percent, expand = c(0,0.01)) +
-    labs(title = "An·lisis de riesgo: Probabilidad de mortalidad > 9,8%",
+    labs(title = "An√°lisis de riesgo: Probabilidad de mortalidad > 9,8%",
          subtitle = "CLUSTER 2 - SALAR",
          x="\nMortalidad Acum. (%)",
          y="Prob. Acum.",
-         caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+         caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
     geom_vline(xintercept = 0.098, color="red", lty=2, lwd=.7) +
     theme_minimal() +
     theme(panel.grid.minor = element_blank(),
@@ -2262,8 +2259,8 @@ curve(dlogis(x, location = res2.prod$fittedParams[["location"]], scale = res2.pr
 quantile(simular.prod, c(0.05, 0.50, 0.95))
 
 
-(valor_inf<- qlogis(0.0001, location = res2.prod$fittedParams[["location"]], scale = res2.prod$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
-(valor_sup<- qlogis(0.9999, location = res2.prod$fittedParams[["location"]], scale = res2.prod$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
+(valor_inf<- qlogis(0.0001, location = res2.prod$fittedParams[["location"]], scale = res2.prod$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
+(valor_sup<- qlogis(0.9999, location = res2.prod$fittedParams[["location"]], scale = res2.prod$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
 
 
 #estadisticos
@@ -2278,11 +2275,11 @@ median(simular.prod)
     geom_histogram(aes(simular.prod),fill="steelblue", color="grey95", binwidth = 0.2) +
     scale_y_continuous(expand = c(0,0)) +
     scale_x_continuous(expand = c(0,0), breaks = seq(1,7,0.5)) +
-    labs(title = "An·lisis de riesgo: SimulaciÛn de Productividad (Kg. Cosecha/smolt)",
+    labs(title = "An√°lisis de riesgo: Simulaci√≥n de Productividad (Kg. Cosecha/smolt)",
          subtitle = "CLUSTER 2 - SALAR",
          x="\nKg. Cosecha/smolt",
          y="Frecuencia\n",
-         caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+         caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
     geom_vline(xintercept = valor_5pct, color="red", lty=2, lwd=.7) +
     geom_vline(xintercept = valor_95pct, color="red", lty=2, lwd=.7) +
     theme_minimal() +
@@ -2352,11 +2349,11 @@ head(bd.prob.prod)
    geom_area(aes(prob.prod.x, prob.prod.y), fill="steelblue", alpha=.15) +
    scale_y_continuous(limits = c(0,1),breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
    scale_x_continuous(limits = c(1,6), breaks = seq(0,6,0.5), expand = c(0,0)) +
-   labs(title = "An·lisis de riesgo: Probabilidad de Productividad < 4.57 Kg.cosecha/smolt",
+   labs(title = "An√°lisis de riesgo: Probabilidad de Productividad < 4.57 Kg.cosecha/smolt",
         subtitle = "CLUSTER 2 - SALAR",
         x="\nKg.cosecha/smolt",
         y="Prob. Acum.",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 4.57, color="red", lty=2, lwd=.7) +
    theme_minimal() +
    theme(panel.grid.minor = element_blank(),
@@ -2368,7 +2365,7 @@ head(bd.prob.prod)
          axis.title = element_text(color = "grey40", size=10),
          plot.subtitle=element_text(size=10, color="steelblue", face="bold"),
          plot.title=element_text(size=14, color="#333333")) +
-   #comentario y flecha: valor mÌnimo
+   #comentario y flecha: valor m√≠nimo
    geom_label(aes(x = 3.2 , y = ref_prod, label = str_glue("Probabilidad:\n {round(ref_prod*100,2)}%")),  hjust = 0, vjust = 0.5, 
               lineheight = 0.8, colour = "#555555", fill = "grey90", label.size = NA, size = 4) +
    geom_curve(aes(x = 4, y = ref_prod, xend = 4.35, yend = ref_prod), colour = "#555555", curvature = 0, size=0.5,
@@ -2388,7 +2385,7 @@ ggsave("cluster_2.prob.prod.salar.png", clu2.prob.prod.salar, width = 22.8, heig
 
 
 ###
-###   ...3] Uso de antibiÛticos  ---------------------------------------------------------------------------------------------------------------------------  
+###   ...3] Uso de antibi√≥ticos  ---------------------------------------------------------------------------------------------------------------------------  
 ### 
 
 #Histograma datos originales
@@ -2419,8 +2416,8 @@ curve(dlogis(x, location = res2.ab$fittedParams[["location"]], scale = res2.ab$f
 (valor_95pct<- qlogis(0.95, location = res2.ab$fittedParams[["location"]], scale = res2.ab$fittedParams[["scale"]], lower.tail=TRUE))
 
 #valor inferior y superior
-(valor_inf<- qlogis(0.0001, location = res2.ab$fittedParams[["location"]], scale = res2.ab$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
-(valor_sup<- qlogis(0.999, location = res2.ab$fittedParams[["location"]], scale = res2.ab$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
+(valor_inf<- qlogis(0.0001, location = res2.ab$fittedParams[["location"]], scale = res2.ab$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
+(valor_sup<- qlogis(0.999, location = res2.ab$fittedParams[["location"]], scale = res2.ab$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
 
 
 #transformar a data frame
@@ -2436,11 +2433,11 @@ median(simular.ab)
    geom_histogram(aes(simular.ab),fill="steelblue", color="grey95", binwidth = 100) +
    scale_y_continuous(expand = c(0,0)) +
    scale_x_continuous(expand = c(0,50), breaks = seq(0,3000,200), limits = c(-100,max(simular.ab))) +
-   labs(title = "An·lisis de riesgo: SimulaciÛn uso de AntibiÛticos (Gr.Ab./ton. Cosechada)",
+   labs(title = "An√°lisis de riesgo: Simulaci√≥n uso de Antibi√≥ticos (Gr.Ab./ton. Cosechada)",
         subtitle = "CLUSTER 2 - SALAR",
         x="\nGr.Ab./ton. Cosechada",
         y="Frecuencia\n",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = valor_5pct, color="red", lty=2, lwd=.7) +
    geom_vline(xintercept = valor_95pct, color="red", lty=2, lwd=.7) +
    theme_minimal() +
@@ -2506,11 +2503,11 @@ head(bd.prob.ab)
    geom_area(aes(prob.ab.x, prob.ab.y), fill="steelblue", alpha=.15) +
    scale_y_continuous(limits = c(0,1),breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
    scale_x_continuous(limits = c(-100,2600), breaks = seq(0,2600,200), expand = c(0.02,0.02)) +
-   labs(title = "An·lisis de riesgo: Probabilidad de uso de antibiÛticos > 250 Gr.Ab/ton.cosechada",
+   labs(title = "An√°lisis de riesgo: Probabilidad de uso de antibi√≥ticos > 250 Gr.Ab/ton.cosechada",
         subtitle = "CLUSTER 2 - SALAR",
         x="\nGr.Ab/ton.cosechada",
         y="Prob.Acum.",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 250, color="red", lty=2, lwd=.7) +
    theme_minimal() +
    theme(panel.grid.minor = element_blank(),
@@ -2522,7 +2519,7 @@ head(bd.prob.ab)
          axis.title = element_text(color = "grey40", size=10),
          plot.subtitle=element_text(size=10, color="steelblue", face="bold"),
          plot.title=element_text(size=14, color="#333333")) +
-   #comentario y flecha: valor mÌnimo
+   #comentario y flecha: valor m√≠nimo
    geom_label(aes(x = 450 , y = ref_ab, label = str_glue("Probabilidad:\n  {round(ref_ab*100, 2)}%")),  hjust = 0, vjust = 0.5, 
               lineheight = 0.8, colour = "#555555", fill = "grey90", label.size = NA, size = 4) +
    geom_curve(aes(x = 445, y = ref_ab, xend = 309, yend = ref_ab), colour = "#555555", curvature = 0, size=0.5,
@@ -2540,7 +2537,7 @@ ggsave("cluster_2.prob.ab.salar.png", clu2.prob.ab.salar, width = 22.8, height =
 
 
 ### 
-### ... 4] BaÒos Caligus  ------------------------------------------------------------------------------------------------------------------------------------  
+### ... 4] Ba√±os Caligus  ------------------------------------------------------------------------------------------------------------------------------------  
 ### 
 
 
@@ -2548,49 +2545,49 @@ ggsave("cluster_2.prob.ab.salar.png", clu2.prob.ab.salar, width = 22.8, height =
 hist(bd_cluster2$banos_caligus)
 
 #ajustar a dist. de probabilidad
-res2.baÒo<-fit.cont(data2fit = bd_cluster2$banos_caligus) 
-res2.baÒo
+res2.ba√±o<-fit.cont(data2fit = bd_cluster2$banos_caligus) 
+res2.ba√±o
 
-res2.baÒo$fittedParams[["mean"]]
-res2.baÒo$fittedParams[["sd"]]
+res2.ba√±o$fittedParams[["mean"]]
+res2.ba√±o$fittedParams[["sd"]]
 
 #---------------------------------------------------+
 ## 4.1- Simular 5000 resultado en base a Dist.Prob. ----
 #---------------------------------------------------+
 #Simular 5000 resultados posibles en base a parametros fijos 
-simular.baÒo<- rnorm(5000, mean = res2.baÒo$fittedParams[["mean"]], sd = res2.baÒo$fittedParams[["sd"]]) 
+simular.ba√±o<- rnorm(5000, mean = res2.ba√±o$fittedParams[["mean"]], sd = res2.ba√±o$fittedParams[["sd"]]) 
 
-hist(simular.baÒo, freq = FALSE, col="lightsalmon",main="Histograma",sub="Datos simulados; Repet=5000", breaks = 10)
+hist(simular.ba√±o, freq = FALSE, col="lightsalmon",main="Histograma",sub="Datos simulados; Repet=5000", breaks = 10)
 x<- seq(0,100, by=1)
-curve(dnorm(x, mean = res2.baÒo$fittedParams[["mean"]], sd = res2.baÒo$fittedParams[["sd"]]), col="blue",lwd=2,add=TRUE)
+curve(dnorm(x, mean = res2.ba√±o$fittedParams[["mean"]], sd = res2.ba√±o$fittedParams[["sd"]]), col="blue",lwd=2,add=TRUE)
 
 
 #Percentil 5 y 95
-valor_5pct<- qnorm(0.05, mean = res2.baÒo$fittedParams[["mean"]], sd = res2.baÒo$fittedParams[["sd"]], lower.tail=TRUE) 
-valor_95pct<- qnorm(0.95, mean = res2.baÒo$fittedParams[["mean"]], sd = res2.baÒo$fittedParams[["sd"]], lower.tail=TRUE)
+valor_5pct<- qnorm(0.05, mean = res2.ba√±o$fittedParams[["mean"]], sd = res2.ba√±o$fittedParams[["sd"]], lower.tail=TRUE) 
+valor_95pct<- qnorm(0.95, mean = res2.ba√±o$fittedParams[["mean"]], sd = res2.ba√±o$fittedParams[["sd"]], lower.tail=TRUE)
 
 #Valor inferior y superior
-valor_inf<- qnorm(0.0001, mean = res2.baÒo$fittedParams[["mean"]], sd = res2.baÒo$fittedParams[["sd"]], lower.tail=TRUE) #solo para ubicar el texto en el gr·fico
-valor_sup<- qnorm(0.999, mean = res2.baÒo$fittedParams[["mean"]], sd = res2.baÒo$fittedParams[["sd"]], lower.tail=TRUE) #solo para ubicar el texto en el gr·fico
+valor_inf<- qnorm(0.0001, mean = res2.ba√±o$fittedParams[["mean"]], sd = res2.ba√±o$fittedParams[["sd"]], lower.tail=TRUE) #solo para ubicar el texto en el gr√°fico
+valor_sup<- qnorm(0.999, mean = res2.ba√±o$fittedParams[["mean"]], sd = res2.ba√±o$fittedParams[["sd"]], lower.tail=TRUE) #solo para ubicar el texto en el gr√°fico
 
 
 #transformar a data frame
-max(simular.baÒo)
-min(simular.baÒo)
-mean(simular.baÒo)
-median(simular.baÒo)
+max(simular.ba√±o)
+min(simular.ba√±o)
+mean(simular.ba√±o)
+median(simular.ba√±o)
 
 
 # Grafico resultados simulados ----
-(clu2.sim.baÒo.salar <- ggplot(as.data.frame(simular.baÒo))+
-   geom_histogram(aes(simular.baÒo),fill="steelblue", color="grey95", binwidth = 2) +
+(clu2.sim.ba√±o.salar <- ggplot(as.data.frame(simular.ba√±o))+
+   geom_histogram(aes(simular.ba√±o),fill="steelblue", color="grey95", binwidth = 2) +
    scale_y_continuous(expand = c(0,0)) +
-   scale_x_continuous(breaks = seq(0,36,2), limits = c(-1,max(simular.baÒo))) +
-   labs(title = "An·lisis de riesgo: SimulaciÛn total baÒos antiparasitarios por ciclo",
+   scale_x_continuous(breaks = seq(0,36,2), limits = c(-1,max(simular.ba√±o))) +
+   labs(title = "An√°lisis de riesgo: Simulaci√≥n total ba√±os antiparasitarios por ciclo",
         subtitle = "CLUSTER 2 - SALAR",
-        x="\nBaÒos (n∞)",
+        x="\nBa√±os (n¬∞)",
         y="Frecuencia\n",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 0, color="red", lty=2, lwd=.7) +
    geom_vline(xintercept = valor_95pct, color="red", lty=2, lwd=.7) +
    theme_minimal() +
@@ -2607,11 +2604,11 @@ median(simular.baÒo)
    annotate("rect", xmin = -1, xmax = 0, ymin = 1230, ymax = 1280, alpha = .25) +
    annotate("text", x = -0.5, y = 1255, label="P5", size=3) +
    #comentario percentil 95
-   annotate("rect", xmin = valor_95pct, xmax = max(simular.baÒo), ymin = 1230, ymax = 1280, alpha = .25) +
+   annotate("rect", xmin = valor_95pct, xmax = max(simular.ba√±o), ymin = 1230, ymax = 1280, alpha = .25) +
    annotate("text", x = (valor_95pct+2), y =1255, label="Percentil 95", size=3)
 )
 
-ggsave("cluster_2.sim.hist.baÒo.salar.png", clu2.sim.baÒo.salar, width = 22.8, height = 11.5, units = "cm", dpi=500) 
+ggsave("cluster_2.sim.hist.ba√±o.salar.png", clu2.sim.ba√±o.salar, width = 22.8, height = 11.5, units = "cm", dpi=500) 
 
 
 
@@ -2619,51 +2616,51 @@ ggsave("cluster_2.sim.hist.baÒo.salar.png", clu2.sim.baÒo.salar, width = 22.8, h
 ### Curvas de probabilidad acumulada ----
 
 # F(x) de densidad
-dnorm(10, mean = res2.baÒo$fittedParams[["mean"]], sd = res2.baÒo$fittedParams[["sd"]], log=FALSE) #probabilidad de tener un resultado = 
+dnorm(10, mean = res2.ba√±o$fittedParams[["mean"]], sd = res2.ba√±o$fittedParams[["sd"]], log=FALSE) #probabilidad de tener un resultado = 
 
 # F(x) de probabilidad
-pnorm(10, mean = res2.baÒo$fittedParams[["mean"]], sd = res2.baÒo$fittedParams[["sd"]], 
+pnorm(10, mean = res2.ba√±o$fittedParams[["mean"]], sd = res2.ba√±o$fittedParams[["sd"]], 
       lower.tail=TRUE, log.p = FALSE) #Prob resultado <
 
-(ref_baÒo <- pnorm(10, mean = res2.baÒo$fittedParams[["mean"]], sd = res2.baÒo$fittedParams[["sd"]], 
+(ref_ba√±o <- pnorm(10, mean = res2.ba√±o$fittedParams[["mean"]], sd = res2.ba√±o$fittedParams[["sd"]], 
                    lower.tail=FALSE, log.p = FALSE) #Prob resultado > 10
 )
 
 
 #Probabilidad resultado entre 2 valores
-vProbX <- pnorm(c(3,6), mean = res2.baÒo$fittedParams[["mean"]], sd = res2.baÒo$fittedParams[["sd"]], lower.tail=TRUE) 
+vProbX <- pnorm(c(3,6), mean = res2.ba√±o$fittedParams[["mean"]], sd = res2.ba√±o$fittedParams[["sd"]], lower.tail=TRUE) 
 vProbX
 miProbX=vProbX[2]-vProbX[1]
 miProbX*100
 
 
-mean(simular.baÒo >= 6)
-mean(simular.baÒo >= 8)
-mean(simular.baÒo >= 10)
-mean(simular.baÒo >= 12)
-mean(simular.baÒo >= 15)
+mean(simular.ba√±o >= 6)
+mean(simular.ba√±o >= 8)
+mean(simular.ba√±o >= 10)
+mean(simular.ba√±o >= 12)
+mean(simular.ba√±o >= 15)
 
 
 
 
 #datos probailidad acum.
-prob.baÒo <- curve(1-pnorm(x, mean = res2.baÒo$fittedParams[["mean"]], sd = res2.baÒo$fittedParams[["sd"]]), xlim=c(-10,26))
+prob.ba√±o <- curve(1-pnorm(x, mean = res2.ba√±o$fittedParams[["mean"]], sd = res2.ba√±o$fittedParams[["sd"]]), xlim=c(-10,26))
 
-bd.prob.baÒo <- data.frame(prob.baÒo$x, prob.baÒo$y)
-head(bd.prob.baÒo)
+bd.prob.ba√±o <- data.frame(prob.ba√±o$x, prob.ba√±o$y)
+head(bd.prob.ba√±o)
 
 
 # Grafico Prob. Acum. Mortalidad ----
-(clu2.prob.baÒo.salar <- ggplot(bd.prob.baÒo)+
-   geom_line(aes(prob.baÒo.x, prob.baÒo.y), lwd=1.5, color="steelblue") +
-   geom_area(aes(prob.baÒo.x, prob.baÒo.y), fill="steelblue", alpha=.15) +
+(clu2.prob.ba√±o.salar <- ggplot(bd.prob.ba√±o)+
+   geom_line(aes(prob.ba√±o.x, prob.ba√±o.y), lwd=1.5, color="steelblue") +
+   geom_area(aes(prob.ba√±o.x, prob.ba√±o.y), fill="steelblue", alpha=.15) +
    scale_y_continuous(limits = c(0,1),breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
    scale_x_continuous(limits = c(-2,36), breaks = seq(0,36,2), expand = c(0,0)) +
-   labs(title = "An·lisis de riesgo: Probabilidad de baÒos antiparasitarios en el ciclo > 10",
+   labs(title = "An√°lisis de riesgo: Probabilidad de ba√±os antiparasitarios en el ciclo > 10",
         subtitle = "CLUSTER 2 - SALAR",
-        x="\nbaÒos (n∞)",
+        x="\nba√±os (n¬∞)",
         y="Prob. Acum.",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 10, color="red", lty=2, lwd=.7) +
    theme_minimal() +
    theme(panel.grid.minor = element_blank(),
@@ -2675,16 +2672,16 @@ head(bd.prob.baÒo)
          axis.title = element_text(color = "grey40", size=10),
          plot.subtitle=element_text(size=10, color="steelblue", face="bold"),
          plot.title=element_text(size=14, color="#333333")) +
-   #comentario y flecha: valor mÌnimo
-   geom_label(aes(x = 12.5 , y = ref_baÒo, label = str_glue("Probabilidad:\n {round(ref_baÒo*100,2)}% ")),  hjust = 0, vjust = 0.5, 
+   #comentario y flecha: valor m√≠nimo
+   geom_label(aes(x = 12.5 , y = ref_ba√±o, label = str_glue("Probabilidad:\n {round(ref_ba√±o*100,2)}% ")),  hjust = 0, vjust = 0.5, 
               lineheight = 0.8, colour = "#555555", fill = "grey90", label.size = NA, size = 4) +
-   geom_curve(aes(x = 12.4, y = ref_baÒo, xend = 10.2, yend = ref_baÒo), colour = "#555555", curvature = 0, size=0.5,
+   geom_curve(aes(x = 12.4, y = ref_ba√±o, xend = 10.2, yend = ref_ba√±o), colour = "#555555", curvature = 0, size=0.5,
               arrow = arrow(length = unit(0.03, "npc"))) +
    annotate("segment", x = 0, xend = 0, y = 0, yend = 0.1, colour = "grey60", lwd=.8) +
    annotate("segment", x = 9.1, xend = 9.1, y = 0, yend = 0.1, colour = "grey60", lwd=.8)
 )
 
-ggsave("cluster_2.prob.baÒo.salar.png", clu2.prob.baÒo.salar, width = 22.8, height = 11.5, units = "cm", dpi=500)
+ggsave("cluster_2.prob.ba√±o.salar.png", clu2.prob.ba√±o.salar, width = 22.8, height = 11.5, units = "cm", dpi=500)
 
 
 
@@ -2720,8 +2717,8 @@ curve(dnorm(x, mean = res2.gf3$fittedParams[["mean"]], sd = res2.gf3$fittedParam
 (valor_5pct<- qnorm(0.05, mean = res2.gf3$fittedParams[["mean"]], sd = res2.gf3$fittedParams[["sd"]], lower.tail=TRUE) )
 (valor_95pct<- qnorm(0.95, mean = res2.gf3$fittedParams[["mean"]], sd = res2.gf3$fittedParams[["sd"]], lower.tail=TRUE) )
 
-(valor_inf<- qnorm(0.0001, mean = res2.gf3$fittedParams[["mean"]], sd = res2.gf3$fittedParams[["sd"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
-(valor_sup<- qnorm(0.999, mean = res2.gf3$fittedParams[["mean"]], sd = res2.gf3$fittedParams[["sd"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
+(valor_inf<- qnorm(0.0001, mean = res2.gf3$fittedParams[["mean"]], sd = res2.gf3$fittedParams[["sd"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
+(valor_sup<- qnorm(0.999, mean = res2.gf3$fittedParams[["mean"]], sd = res2.gf3$fittedParams[["sd"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
 
 
 #transformar a data frame
@@ -2736,11 +2733,11 @@ median(simular.gf3)
    geom_histogram(aes(simular.gf3),fill="steelblue", color="grey95", binwidth = 0.1) +
    scale_y_continuous(expand = c(0,0), breaks = seq(0,1500,250)) +
    scale_x_continuous(expand = c(0,0), breaks = seq(0,2.8,0.2)) +
-   labs(title = "An·lisis de riesgo: SimulaciÛn de GF3",
+   labs(title = "An√°lisis de riesgo: Simulaci√≥n de GF3",
         subtitle = "CLUSTER 2 - SALAR",
         x="\nGF3",
         y="Frecuencia\n",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = valor_5pct, color="red", lty=2, lwd=.7) +
    geom_vline(xintercept = valor_95pct, color="red", lty=2, lwd=.7) +
    theme_minimal() +
@@ -2800,11 +2797,11 @@ head(bd.prob.prod)
    geom_area(aes(prob.prod.x, prob.prod.y), fill="steelblue", alpha=.15) +
    scale_y_continuous(limits = c(0,1),breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
    scale_x_continuous(limits = c(1.2,3), breaks = seq(1,2.8,0.2), expand = c(0,0)) +
-   labs(title = "An·lisis de riesgo: Probabilidad de GF3 < 2.1",
+   labs(title = "An√°lisis de riesgo: Probabilidad de GF3 < 2.1",
         subtitle = "CLUSTER 2 - SALAR",
         x="\nGF3",
         y="Prob. Acum.",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 2.1, color="red", lty=2, lwd=.7) +
    theme_minimal() +
    theme(panel.grid.minor = element_blank(),
@@ -2816,7 +2813,7 @@ head(bd.prob.prod)
          axis.title = element_text(color = "grey40", size=10),
          plot.subtitle=element_text(size=10, color="steelblue", face="bold"),
          plot.title=element_text(size=14, color="#333333")) +
-   #comentario y flecha: valor mÌnimo
+   #comentario y flecha: valor m√≠nimo
    geom_label(aes(x = 1.76 , y = ref_gf3, label = str_glue("Probabilidad:\n {round(ref_gf3*100,2)}%")),  hjust = 0, vjust = 0.5, 
               lineheight = 0.8, colour = "#555555", fill = "grey90", label.size = NA, size = 4) +
    geom_curve(aes(x = 2, y = ref_gf3, xend = 2.08, yend = ref_gf3), colour = "#555555", curvature = 0, size=0.5,
@@ -2862,8 +2859,8 @@ curve(dweibull(x, shape = res2.sgr$fittedParams[["shape"]], scale = res2.sgr$fit
 (valor_5pct<- qweibull(0.05, shape = res2.sgr$fittedParams[["shape"]], scale = res2.sgr$fittedParams[["scale"]], lower.tail=TRUE) )
 (valor_95pct<- qweibull(0.95, shape = res2.sgr$fittedParams[["shape"]], scale = res2.sgr$fittedParams[["scale"]], lower.tail=TRUE) )
 
-(valor_inf<- qweibull(0.0001, shape = res2.sgr$fittedParams[["shape"]], scale = res2.sgr$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
-(valor_sup<- qweibull(0.999, shape = res2.sgr$fittedParams[["shape"]], scale = res2.sgr$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr·fico
+(valor_inf<- qweibull(0.0001, shape = res2.sgr$fittedParams[["shape"]], scale = res2.sgr$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
+(valor_sup<- qweibull(0.999, shape = res2.sgr$fittedParams[["shape"]], scale = res2.sgr$fittedParams[["scale"]], lower.tail=TRUE)) #solo para ubicar el texto en el gr√°fico
 
 
 #transformar a data frame
@@ -2911,11 +2908,11 @@ head(bd.prob.sgr)
    geom_area(aes(prob.sgr.x, prob.sgr.y), fill="steelblue", alpha=.15) +
    scale_y_continuous(limits = c(0,1.05),breaks = seq(0,1,0.1), labels = percent, expand = c(0.01,0.01)) +
    scale_x_continuous(limits = c(0.2, 1.2), breaks = seq(0.2,3,0.2), expand = c(0.01,0.01)) +
-   labs(title = "An·lisis de riesgo: Probabilidad de SGR < 0.85",
+   labs(title = "An√°lisis de riesgo: Probabilidad de SGR < 0.85",
         subtitle = "CLUSTER 2 - SALAR",
         x="\nSGR",
         y="Prob. Acum.",
-        caption = "SimulaciÛn de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
+        caption = "Simulaci√≥n de Montecarlo en base a 5.000 repeticiones \nFuente: Aquabench") +
    geom_vline(xintercept = 0.85, color="red", lty=2, lwd=.7) +
    theme_minimal() +
    theme(panel.grid.minor = element_blank(),
@@ -2927,7 +2924,7 @@ head(bd.prob.sgr)
          axis.title = element_text(color = "grey40", size=10),
          plot.subtitle=element_text(size=10, color="steelblue", face="bold"),
          plot.title=element_text(size=14, color="#333333")) +
-   #comentario y flecha: valor mÌnimo
+   #comentario y flecha: valor m√≠nimo
    geom_label(aes(x = 0.58 , y = ref_sgr, label = str_glue("Probabilidad:\n {round(ref_sgr*100,2)}%")),  hjust = 0, vjust = 0.5, 
               lineheight = 0.8, colour = "#555555", fill = "grey90", label.size = NA, size = 4) +
    geom_curve(aes(x = 0.72, y = ref_sgr, xend = 0.84, yend = ref_sgr), colour = "#555555", curvature = 0, size=0.5,
